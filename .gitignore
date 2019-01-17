@@ -25,4 +25,4 @@
 /.nb-gradle/
 
 ### App ###
-/src/main/resources/hibernate-local.properties
+#/src/main/resources/hibernate-local.properties
