@@ -1,0 +1,5 @@
+Insert into ROLE (ROLE_ID,ROLE_NAME,ROLE_LEVEL) values (1,N'ADMIN',1);
+Insert into ROLE (ROLE_ID,ROLE_NAME,ROLE_LEVEL) values (2,N'USER',2);
+
+Insert into HOCSINH (MA_HOC_SINH,TEN_HOC_SINH,USERNAME,PASSWORD,ROLE_ID,MA_LOP) values (1,N'Admin',N'admin',N'admin',1,1);
+Insert into HOCSINH (MA_HOC_SINH,TEN_HOC_SINH,USERNAME,PASSWORD,ROLE_ID,MA_LOP) values (2,N'VuDaiK',N'user',N'user',2,1);
