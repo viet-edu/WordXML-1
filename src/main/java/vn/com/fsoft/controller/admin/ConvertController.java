@@ -51,13 +51,18 @@ public class ConvertController {
         if (result.hasErrors()) {
             return new ModelAndView("admin/convert", Constants.DEFAULT_MODEL_NAME, convertFormRequest);
         } else {
+            ConvertFormResponse res = new ConvertFormResponse();
             try {
-                ConvertFormResponse res = convertService.convert(convertFormRequest);
-                model.addAttribute("res", res);
+                res = convertService.convert(convertFormRequest);
+                res.setMessage("Convert thành công!");
+                res.setType("success");
             } catch (InvalidFormatException | IOException | JAXBException e) {
+                res.setType("error");
+                res.setMessage(e.getMessage());
                 e.printStackTrace();
             }
-            return new ModelAndView("admin/convert", Constants.DEFAULT_MODEL_NAME, new ConvertFormRequest());
+            redirAttrs.addFlashAttribute("res", res);
+            return new ModelAndView("redirect:/admin/Convert");
         }
     }
 

@@ -98,13 +98,13 @@ public class ConvertServiceImpl implements ConvertService {
 
             // Write the Document in file system
             String fileName = file.getOriginalFilename() + "_converted".replaceAll(".xml", "");
-            String filePath = uploadPath + "xml\\" + fileName + ".docx";
+            String filePath = uploadPath + "word\\" + fileName + ".docx";
             FileOutputStream out = new FileOutputStream(new File(filePath));
             document.write(out);
             out.close();
             document.close();
             res.setFileName(fileName);
-            res.setFilePath("xml/" + fileName + ".docx");
+            res.setFilePath("word/" + fileName + ".docx");
         }
 
         if (convertType == 2) {

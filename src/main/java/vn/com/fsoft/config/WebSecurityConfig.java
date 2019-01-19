@@ -1,5 +1,6 @@
 package vn.com.fsoft.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -16,6 +17,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     private static final String[] PERMITALL_RESOURCE_LIST = new String[] {"/", "/auth/**", "/403" };
     private static final String[] ADMIN_RESOURCE_LIST = new String[] { "/admin/**" };
     private static final String[] USER_RESOURCE_LIST = new String[] { "/HocTap/**", "/KiemTra/**", "/XemLai/**", "/TimKiem/**", "/DienThongTin/**" };
+
+    @Autowired
+    private Securityhandler securityhandler;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -36,7 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
         // Config pages for ROLE_USER
         http.authorizeRequests().antMatchers(USER_RESOURCE_LIST).hasAnyAuthority("ROLE_ADMIN", "ROLE_USER");
-        
+
         // If try to access pages without roles required
         // throw AccessDeniedException
         http.authorizeRequests().and().exceptionHandling().accessDeniedPage("/403");
@@ -46,7 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
             .loginProcessingUrl("/j_spring_security_check")
             .loginPage("/auth/DangNhap")
-            .defaultSuccessUrl("/")
+            .successHandler(securityhandler)
             .failureUrl("/auth/DangNhap?error=true")
             .usernameParameter("username")
             .passwordParameter("password")

@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>${errorCode} | WEBSITE HỖ TRỢ ÔN TẬP VÀ KIỂM TRA TRỰC TUYẾN</title>
+    <title>${errorCode} | WEBSITE CONVERT DATA</title>
 
     <!-- Favicon-->
     <link rel="icon" href="<c:url value="/resources/favicon.ico" />" type="image/x-icon">

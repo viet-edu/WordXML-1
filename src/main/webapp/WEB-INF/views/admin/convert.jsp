@@ -12,6 +12,19 @@
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="body">
+                    <c:if test="${res != null}">
+                        <c:if test="${res.type == 'success'}">
+                            <div class="alert alert-info">
+                                <strong>${res.message}</strong> <a href="<c:url value="/resources/uploads/${res.filePath}" />" style="color: red" target="blank">Tải xuống file tại đây</a>
+                            </div>
+                        </c:if>
+                        <c:if test="${res.type == 'error'}">
+                            <div class="alert alert-danger">
+                                <strong>${res.message}</strong>
+                            </div>
+                        </c:if>
+                    </c:if>
+                    
                     <form:form action="${contextPath}/admin/ConvertAction" method="post" class="form-horizontal" id="validation-form" enctype="multipart/form-data">
                         <div class="row clearfix">
                             <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
@@ -43,20 +56,23 @@
                                 <form:button type="submit" name="convert" class="btn btn-success m-t-15 w-90 waves-effect">Convert</form:button>
                             </div>
                         </div>
-                        <c:if test="${res != null}">
-                            <div class="row clearfix">
-                                <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
-                                    <label for="description">File đã convert:</label>
-                                </div>
-                                <div class="col-lg-5 col-md-5 col-sm-4 col-xs-4">
-                                    <a href="<c:url value="/resources/uploads/${res.filePath}" />" target="blank">Download file</a>
-                                </div>
-                            </div>
-                        </c:if>
                     </form:form>
                 </div>
             </div>
         </div>
     </div>
 </section>
-                
+<script>
+	$(function(){
+	   	$('#convertType').val(2);
+	   	$('#file').prop('accept', '.docx');
+	   	$('#convertType').on('change', function(){
+	   	   	var convertType = $(this).val();
+	   	   	if (convertType == '1') {
+	   	   	    $('#file').prop('accept', '.xml');
+	   	   	} else {
+	   	   		$('#file').prop('accept', '.docx');
+	   	   	}
+	   	});
+	});
+</script>

@@ -12,7 +12,7 @@
             ${title}
         </c:if>
         <c:if test="${title == null}">
-            WEBSITE HỖ TRỢ ÔN TẬP VÀ KIỂM TRA TRỰC TUYẾN
+            WEBSITE CONVERT DATA
         </c:if>
     </title>
     <link rel="icon" href="<c:url value="/resources/favicon.ico" />" type="image/x-icon">
