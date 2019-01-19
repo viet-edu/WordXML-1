@@ -1,0 +1,14 @@
+<mapping>
+	<class name="vn.com.fsoft.Answer">
+		<map-to xml="answer" />
+		<field name="fraction" type="integer">
+			<bind-xml name="fraction" node="attribute" />
+		</field>
+		<field name="format" type="string">
+			<bind-xml name="format" node="attribute" />
+		</field>
+		<field name="text" type="string">
+			<bind-xml name="text" node="element" />
+		</field>
+	</class>
+</mapping>

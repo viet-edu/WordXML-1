@@ -17,6 +17,7 @@
 	     <property name="locations">
 	         <list>
 	             <value>classpath:hibernate-local.properties</value>
+                 <value>classpath:application.properties</value>
 	         </list>
 	     </property>
 	     <property name="ignoreResourceNotFound" value="true"/>
