@@ -94,6 +94,19 @@
                         </a>
                     </li>
                     <li>
+                        <a href="javascript:void(0);" class="menu-toggle">
+                            <span>Quản lý file</span>
+                        </a>
+                        <ul class="ml-menu">
+                            <li>
+                                <a href="${contextPath}/admin/QuanLyFile/Converted/word">Word</a>
+                            </li>
+                            <li>
+                                <a href="${contextPath}/admin/QuanLyFile/Converted/xml">XML</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
                         <a href="${contextPath}/admin/Convert">
                             <span>Convert</span>
                         </a>

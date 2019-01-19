@@ -17,6 +17,9 @@ import lombok.Setter;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Question {
 
+    @XmlElement(name = "category")
+    private Category category;
+
     @XmlAttribute(name = "type")
     private String type;
 
@@ -39,10 +42,10 @@ public class Question {
     private Integer hidden;
 
     @XmlElement(name = "single")
-    private boolean single;
+    private Boolean single;
 
     @XmlElement(name = "shuffleanswers")
-    private boolean shuffleanswers;
+    private Boolean shuffleanswers;
 
     @XmlElement(name = "answernumbering")
     private String answernumbering;
@@ -62,4 +65,9 @@ public class Question {
     @XmlElementWrapper(name = "tags")
     @XmlElement(name = "tag")
     private List<Tag> tags;
+
+    @Override
+    public String toString() {
+        return "123";
+    }
 }

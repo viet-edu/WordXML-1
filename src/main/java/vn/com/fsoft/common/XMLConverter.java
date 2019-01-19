@@ -3,27 +3,36 @@ package vn.com.fsoft.common;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.InputSource;
 
+import vn.com.fsoft.common.handle.AddCommentsListener;
+
 @Component
 public class XMLConverter {
 
-    public void convertFromObjectToXML(Object object, String filepath) throws JAXBException, FileNotFoundException {
+    public void convertFromObjectToXML(Object object, String filepath) throws JAXBException, FileNotFoundException, XMLStreamException, FactoryConfigurationError {
         JAXBContext jaxbContext = JAXBContext.newInstance(object.getClass());
         Marshaller marshaller = jaxbContext.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.marshal(object, new File(filepath));
-        marshaller.marshal(object, System.out);
+        File file = new File(filepath);
+        OutputStream stream = new FileOutputStream(file);
+        marshaller.setListener(new AddCommentsListener(XMLOutputFactory.newInstance().createXMLStreamWriter(stream)));
+        marshaller.marshal(object, stream);
     }
 
     public Object convertFromXMLToObject(String xmlfile, Class<?> clazz) throws IOException, JAXBException {

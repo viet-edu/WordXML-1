@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +55,12 @@ public class ConvertController {
         } else {
             ConvertFormResponse res = new ConvertFormResponse();
             try {
-                res = convertService.convert(convertFormRequest);
+                try {
+                    res = convertService.convert(convertFormRequest);
+                } catch (XMLStreamException | FactoryConfigurationError e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
                 res.setMessage("Convert thành công!");
                 res.setType("success");
             } catch (InvalidFormatException | IOException | JAXBException e) {
@@ -74,7 +81,7 @@ public class ConvertController {
             answer.setFraction(100);
             answer.setText("Answer text");
             converter.convertFromObjectToXML(answer, "D:\\dev2\\WordXML\\requirement\\answer_output.xml");
-        } catch (FileNotFoundException | JAXBException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "admin/xml-to-word";
