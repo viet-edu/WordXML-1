@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -15,24 +16,30 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.InputSource;
 
-import vn.com.fsoft.common.handle.AddCommentsListener;
-
 @Component
 public class XMLConverter {
 
-    public void convertFromObjectToXML(Object object, String filepath) throws JAXBException, FileNotFoundException, XMLStreamException, FactoryConfigurationError {
+    public void convertFromObjectToXML(Object object, String filepath) throws JAXBException, XMLStreamException, FactoryConfigurationError, IOException {
         JAXBContext jaxbContext = JAXBContext.newInstance(object.getClass());
         Marshaller marshaller = jaxbContext.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
         File file = new File(filepath);
         OutputStream stream = new FileOutputStream(file);
-        marshaller.setListener(new AddCommentsListener(XMLOutputFactory.newInstance().createXMLStreamWriter(stream)));
         marshaller.marshal(object, stream);
+        stream.close();
+        // Replace <>
+        String fileContext = FileUtils.readFileToString(file, "UTF-8");
+        fileContext = fileContext.replaceAll("&lt;", "<");
+        fileContext = fileContext.replaceAll("&gt;", ">");
+        FileUtils.write(file, fileContext, "UTF-8");
     }
 
     public Object convertFromXMLToObject(String xmlfile, Class<?> clazz) throws IOException, JAXBException {

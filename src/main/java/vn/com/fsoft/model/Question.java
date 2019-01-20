@@ -24,7 +24,7 @@ public class Question {
     private String type;
 
     @XmlElement(name = "name")
-    private String name;
+    private QuestionName name;
 
     @XmlElement(name = "questiontext")
     private QuestionText questiontext;
@@ -65,9 +65,4 @@ public class Question {
     @XmlElementWrapper(name = "tags")
     @XmlElement(name = "tag")
     private List<Tag> tags;
-
-    @Override
-    public String toString() {
-        return "123";
-    }
 }
