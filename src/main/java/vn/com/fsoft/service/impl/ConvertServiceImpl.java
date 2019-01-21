@@ -66,10 +66,8 @@ public class ConvertServiceImpl implements ConvertService {
             // Create Blank document
             XWPFDocument document = new XWPFDocument();
 
-            // Create new Paragraph
-            XWPFParagraph paragraph1 = document.createParagraph();
-            XWPFRun run = paragraph1.createRun();
-
+            XWPFParagraph paragraph;
+            XWPFRun run;
             String category = null;
             StringBuffer str = new StringBuffer("#");
             for (Question question : quiz.getQuestionList()) {
@@ -92,6 +90,8 @@ public class ConvertServiceImpl implements ConvertService {
                     }
                 }
 
+                paragraph = document.createParagraph();
+                run = paragraph.createRun();
                 str.setLength(str.length() - 1);
                 run.setText(str.toString());
                 run.addBreak();
@@ -99,6 +99,8 @@ public class ConvertServiceImpl implements ConvertService {
                 str.append("#");
 
                 // Write question
+                paragraph = document.createParagraph();
+                run = paragraph.createRun();
                 run.setText(question.getQuestiontext().getText().replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
                 run.addBreak();
                 if (question.getQuestiontext().getFile() != null) {
@@ -113,6 +115,8 @@ public class ConvertServiceImpl implements ConvertService {
 
                 // Write answer
                 for (Answer answer : question.getAnswerList()) {
+                    paragraph = document.createParagraph();
+                    run = paragraph.createRun();
                     if (answer.getFraction() > 0) {
                         run.setText("#dung" + answer.getText().replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
                     } else {
@@ -122,10 +126,21 @@ public class ConvertServiceImpl implements ConvertService {
                 }
 
                 // Write generalfeedback
+                paragraph = document.createParagraph();
+                run = paragraph.createRun();
                 run.setText("#loigiai:");
                 run.addBreak();
                 run.setText(question.getGeneralFeedback().getText().replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
                 run.addBreak();
+                if (question.getGeneralFeedback().getFile() != null) {
+                    run.addPicture(
+                            new ByteArrayInputStream(Base64.getDecoder().decode(question.getGeneralFeedback().getFile().getValue())),
+                            Document.PICTURE_TYPE_JPEG,
+                            question.getGeneralFeedback().getFile().getName(),
+                            Units.toEMU(200),
+                            Units.toEMU(200));
+                    run.addBreak();
+                }
             }
 
             // Write the Document in file system
@@ -215,8 +230,9 @@ public class ConvertServiceImpl implements ConvertService {
                         // Handle QuestionText.
                         questionTextTmp = new QuestionText();
                         questionTextTmp.setFormat("html");
-                        questionTextTmp.setText("<![CDATA[<p>" + strTmp.toString() + "</p><p style='text-align: center;'><img src='@@PLUGINFILE@@/"+fileTmp.getName()+"' width='212' height='300' role='presentation' class='img-responsive atto_image_button_text-bottom'/></p>]]>");
+                        questionTextTmp.setText("<![CDATA[" + strTmp.toString() + "]]>");
                         questionTextTmp.setFile(fileTmp);
+                        fileTmp = new vn.com.fsoft.model.File();;
                         questionTmp.setQuestiontext(questionTextTmp);
                         i_size += 1;
                         strTmp.setLength(0);
@@ -242,8 +258,9 @@ public class ConvertServiceImpl implements ConvertService {
                         // Handle generalfeedback
                         generalTmp = new GeneralFeedback();
                         generalTmp.setFormat("html");
-                        //generalTmp.setFile(fileTmp);
-                        generalTmp.setText("<![CDATA[<p>" + strTmp.toString() + "</p>]]>");
+                        generalTmp.setFile(fileTmp);
+                        fileTmp = new vn.com.fsoft.model.File();
+                        generalTmp.setText("<![CDATA[" + strTmp.toString() + "]]>");
                         questionTmp.setGeneralFeedback(generalTmp);
                         quiz.getQuestionList().add(questionTmp);
                         // Handle tag
@@ -279,6 +296,9 @@ public class ConvertServiceImpl implements ConvertService {
                 }
                 for(XWPFRun item : paragraph.getRuns()) {
                     if (item.getText(item.getTextPosition()) != null) {
+                        if (strTmp.toString().length() == 0) {
+                            strTmp.append("<p>");
+                        }
                         strTmp.append(item.getText(item.getTextPosition()));
                     }
                     for(XWPFPicture itemImg : item.getEmbeddedPictures()) {
@@ -287,6 +307,11 @@ public class ConvertServiceImpl implements ConvertService {
                         iNameFileImg++;
                         fileTmp.setName(iNameFileImg + ".jpg");
                         fileTmp.setPath("/");
+                        if (strTmp.toString().length() > 0) {
+                            strTmp.append("</p>");
+                        }
+
+                        strTmp.append("<p style='text-align: center;'><img src='@@PLUGINFILE@@/"+fileTmp.getName()+"' width='400' height='300' role='presentation' class='img-responsive atto_image_button_text-bottom'/></p>");
                         fileTmp.setValue(Base64.getEncoder().encodeToString(itemImg.getPictureData().getData()));
                     }
                 }
@@ -295,8 +320,8 @@ public class ConvertServiceImpl implements ConvertService {
             strInputList.add(strTmp.toString());
             generalTmp = new GeneralFeedback();
             generalTmp.setFormat("html");
-            //generalTmp.setFile(fileTmp);
-            generalTmp.setText("<![CDATA[<p>" + strTmp.toString() + "</p>]]>");
+            generalTmp.setFile(fileTmp);
+            generalTmp.setText("<![CDATA[" + strTmp.toString() + "]]>");
             questionTmp.setGeneralFeedback(generalTmp);
             document.close();
             fis.close();
