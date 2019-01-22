@@ -10,6 +10,10 @@ public class AddCommentsListener extends Marshaller.Listener{
 
     private XMLStreamWriter xsw;
 
+    public AddCommentsListener() {
+        super();
+    }
+
     public AddCommentsListener(XMLStreamWriter xsw) {
         this.xsw = xsw;
     }

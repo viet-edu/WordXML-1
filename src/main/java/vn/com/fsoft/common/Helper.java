@@ -1,6 +1,11 @@
 package vn.com.fsoft.common;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.security.SecureRandom;
+
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * <b>Helper</b>.
@@ -46,6 +51,15 @@ public class Helper {
     }
 
     public static int randomInRange(int min, int max) {
-        return min + (int)(Math.random() * ((max - min) + 1));
+        return min + (int) (Math.random() * ((max - min) + 1));
+    }
+
+    public static File convertMultipartFileToFile(MultipartFile file) throws IOException {
+        File convFile = new File(file.getOriginalFilename());
+        convFile.createNewFile();
+        FileOutputStream fos = new FileOutputStream(convFile);
+        fos.write(file.getBytes());
+        fos.close();
+        return convFile;
     }
 }

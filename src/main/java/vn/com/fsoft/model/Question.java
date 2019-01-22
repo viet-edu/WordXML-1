@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlTransient;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +17,9 @@ import lombok.Setter;
 @Setter
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Question {
+
+    @XmlTransient
+    private String questionId;
 
     @XmlElement(name = "category")
     private Category category;

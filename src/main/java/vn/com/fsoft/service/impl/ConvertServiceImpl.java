@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -20,11 +21,11 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.Document;
-import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFPicture;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.jdom2.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -53,16 +54,21 @@ public class ConvertServiceImpl implements ConvertService {
     private String uploadPath;
 
     private static final String REGEX_REMOVE_ALL_HTML_TAG = "<[^>]*>";
+    private static final String[] ANSWER_NUMBERING_ARRAY = {"A.", "B.", "C.", "D."};
+    private static final String[] GENERAL_FEEDBACK_ARRAY = {"Lời giải"};
 
     @Override
     public ConvertFormResponse convert(ConvertFormRequest convertFormRequest)
-            throws IOException, JAXBException, InvalidFormatException, XMLStreamException, FactoryConfigurationError {
+            throws IOException, JAXBException, InvalidFormatException, XMLStreamException, FactoryConfigurationError, JDOMException {
         MultipartFile file = convertFormRequest.getFile();
         Integer convertType = convertFormRequest.getConvertType();
         ConvertFormResponse res = new ConvertFormResponse();
 
         if (convertType == 1) {
             Quiz quiz = (Quiz) converter.convertFromXMLToObject(file, Quiz.class);
+
+            // getCommentsFromXML
+            converter.getCommentsFromXML(file, quiz);
 
             // Write to word file
             // Create Blank document
@@ -82,11 +88,7 @@ public class ConvertServiceImpl implements ConvertService {
 
                 // Get category
                 if (question.getCategory() != null) {
-                    if (!"$system$/top".equals(question.getCategory().getText())) {
-                        category = question.getCategory().getText();
-                        category = StringUtils.replace(category, "$system$/top/", "");
-                        category = category.replaceAll("[^a-zA-Z0-9- _\\u0080-\\u9fff]", "");
-                    }
+                    category = question.getCategory().getText();
                     continue;
                 }
 
@@ -95,7 +97,7 @@ public class ConvertServiceImpl implements ConvertService {
                 if (StringUtils.indexOfAny(question.getName().getText(), "Câu", "câu", "Cau", "cau") == -1) {
                     run.setText("Câu ");
                 }
-                run.setText(question.getName().getText() + ": ");
+                run.setText(question.getName().getText() + "(" + question.getQuestionId() + "): ");
 
                 // Write tag
                 if (question.getTags() != null) {
@@ -206,7 +208,11 @@ public class ConvertServiceImpl implements ConvertService {
             }
 
             // Write the Document in file system
-            String fileName = category;
+            String fileName = "converted_" + new Date().getTime();
+            if (category != null) {
+                String [] arrTmp = category.split("[/]");
+                fileName = arrTmp[arrTmp.length - 1].replaceAll("[^a-zA-Z0-9- _\\u0080-\\u9fff]", "");;
+            }
             String filePath = uploadPath + "word\\" + fileName + ".docx";
             FileOutputStream out = new FileOutputStream(new File(filePath));
             document.write(out);
@@ -259,7 +265,9 @@ public class ConvertServiceImpl implements ConvertService {
                 }
                 // Reset when #
                 if (paragraph.getText() != null && paragraph.getText().length() > 1
-                        && paragraph.getText().indexOf("#") == 0) {
+                        && paragraph.getText().indexOf("#") == 0
+                        || StringUtils.startsWithAny(paragraph.getText(), ANSWER_NUMBERING_ARRAY)
+                        || StringUtils.startsWithAny(paragraph.getText(), GENERAL_FEEDBACK_ARRAY)) {
                     i_size += 1;
                     if (strTmp.toString().length() == 0)
                         strTmp.append(paragraph.getText());
@@ -292,18 +300,27 @@ public class ConvertServiceImpl implements ConvertService {
                     case 4:
                     case 5:
                     case 6: // Handle Answer
-                        answerTmp = new Answer();
-                        answerTmp.setFormat("html");
-                        if (strTmp.toString().startsWith("#dung")) {
-                            answerTmp.setText("<![CDATA[<p>" + strTmp.toString().substring(5) + "</p>]]>");
-                            answerTmp.setFraction(100);
+                        if (StringUtils.startsWithAny(strTmp.toString(), ANSWER_NUMBERING_ARRAY)) {
+                            answerTmp = new Answer();
+                            answerTmp.setFormat("html");
+                            for (XWPFRun item : paragraph.getRuns()) {
+                                if (item.getText(item.getTextPosition()) != null) {
+                                    if (StringUtils.startsWithAny(item.getText(item.getTextPosition()), ANSWER_NUMBERING_ARRAY)
+                                            && item.isBold()) {
+                                        strTmp.insert(0, "BOLD");
+                                    }
+                                }
+                            }
+                            if (strTmp.toString().startsWith("BOLD")) {
+                                answerTmp.setText("<![CDATA[<p>" + strTmp.toString().substring(6).trim() + "</p>]]>");
+                                answerTmp.setFraction(100);
+                            }else {
+                                answerTmp.setText("<![CDATA[<p>" + strTmp.toString().substring(2).trim() + "</p>]]>");
+                                answerTmp.setFraction(0);
+                            }
+                            lstAnswer.add(answerTmp);
+                            questionTmp.setAnswerList(lstAnswer);
                         }
-                        if (strTmp.toString().startsWith("#nhieu")) {
-                            answerTmp.setText("<![CDATA[<p>" + strTmp.toString().substring(6) + "</p>]]>");
-                            answerTmp.setFraction(0);
-                        }
-                        lstAnswer.add(answerTmp);
-                        questionTmp.setAnswerList(lstAnswer);
                         break;
                     case 8:
                         // Handle generalfeedback
@@ -343,6 +360,10 @@ public class ConvertServiceImpl implements ConvertService {
                             strTmp.append("<p>");
                         }
                         strTmp.append(item.getText(item.getTextPosition()));
+                        if (StringUtils.startsWithAny(item.getText(item.getTextPosition()), "#A.", "#B.", "#C.", "#D.")
+                                && item.isBold()) {
+                            strTmp.append("BOLD");
+                        }
                     }
                     for (XWPFPicture itemImg : item.getEmbeddedPictures()) {
                         fileTmp = new vn.com.fsoft.model.File();
