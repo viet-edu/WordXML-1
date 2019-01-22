@@ -20,6 +20,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.Document;
+import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFPicture;
@@ -54,7 +55,8 @@ public class ConvertServiceImpl implements ConvertService {
     private static final String REGEX_REMOVE_ALL_HTML_TAG = "<[^>]*>";
 
     @Override
-    public ConvertFormResponse convert(ConvertFormRequest convertFormRequest) throws IOException, JAXBException, InvalidFormatException, XMLStreamException, FactoryConfigurationError {
+    public ConvertFormResponse convert(ConvertFormRequest convertFormRequest)
+            throws IOException, JAXBException, InvalidFormatException, XMLStreamException, FactoryConfigurationError {
         MultipartFile file = convertFormRequest.getFile();
         Integer convertType = convertFormRequest.getConvertType();
         ConvertFormResponse res = new ConvertFormResponse();
@@ -69,18 +71,31 @@ public class ConvertServiceImpl implements ConvertService {
             XWPFParagraph paragraph;
             XWPFRun run;
             String category = null;
-            StringBuffer str = new StringBuffer("#");
+            String answerText = null;
+            String questionText = null;
+            String generalFeedbackText = null;
+            int i = 0;
+            int j = 0;
+            int c = 0;
+            StringBuffer str = new StringBuffer();
             for (Question question : quiz.getQuestionList()) {
 
                 // Get category
                 if (question.getCategory() != null) {
-                    if (!"$course$/top".equals(question.getCategory().getText())) {
+                    if (!"$system$/top".equals(question.getCategory().getText())) {
                         category = question.getCategory().getText();
-                        category = StringUtils.replace(category, "$course$/top/", "");
+                        category = StringUtils.replace(category, "$system$/top/", "");
                         category = category.replaceAll("[^a-zA-Z0-9- _\\u0080-\\u9fff]", "");
                     }
                     continue;
                 }
+
+                // Write question name
+                run = document.createParagraph().createRun();
+                if (StringUtils.indexOfAny(question.getName().getText(), "Câu", "câu", "Cau", "cau") == -1) {
+                    run.setText("Câu ");
+                }
+                run.setText(question.getName().getText() + ": ");
 
                 // Write tag
                 if (question.getTags() != null) {
@@ -90,56 +105,103 @@ public class ConvertServiceImpl implements ConvertService {
                     }
                 }
 
-                paragraph = document.createParagraph();
-                run = paragraph.createRun();
-                str.setLength(str.length() - 1);
+                if (str.length() > 0) {
+                    str.setLength(str.length() - 1);
+                }
                 run.setText(str.toString());
-                run.addBreak();
                 str.setLength(0);
-                str.append("#");
 
                 // Write question
                 paragraph = document.createParagraph();
                 run = paragraph.createRun();
-                run.setText(question.getQuestiontext().getText().replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
-                run.addBreak();
-                if (question.getQuestiontext().getFile() != null) {
+                questionText = question.getQuestiontext().getText();
+                i = 0;
+                j = 0;
+                c = 0;
+                while (true) {
+                    j = questionText.indexOf("<p style='text-align: center;'><img", i + 1);
+                    if (j == -1)
+                        break;
+                    run.setText(questionText.toString().substring(i, j).replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
                     run.addPicture(
-                            new ByteArrayInputStream(Base64.getDecoder().decode(question.getQuestiontext().getFile().getValue())),
-                            Document.PICTURE_TYPE_JPEG,
-                            question.getQuestiontext().getFile().getName(),
-                            Units.toEMU(200),
-                            Units.toEMU(200));
-                    run.addBreak();
+                            new ByteArrayInputStream(
+                                    Base64.getDecoder().decode(question.getQuestiontext().getFile().get(c).getValue())),
+                            Document.PICTURE_TYPE_JPEG, question.getQuestiontext().getFile().get(c).getName(),
+                            Units.toEMU(500), Units.toEMU(400));
+                    c++;
+                    i = questionText.indexOf("/>", j) + 6;
+                }
+                if (c == 0) {
+                    run.setText(questionText.replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
+                } else {
+                    run.setText(
+                            questionText.substring(i, questionText.length()).replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
                 }
 
                 // Write answer
+                i = 0;
                 for (Answer answer : question.getAnswerList()) {
                     paragraph = document.createParagraph();
                     run = paragraph.createRun();
-                    if (answer.getFraction() > 0) {
-                        run.setText("#dung" + answer.getText().replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
-                    } else {
-                        run.setText("#nhieu" + answer.getText().replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
+                    switch (i) {
+                    case 0:
+                        answerText = "A";
+                        break;
+                    case 1:
+                        answerText = "B";
+                        break;
+                    case 2:
+                        answerText = "C";
+                        break;
+                    case 3:
+                        answerText = "D";
+                        break;
+                    default:
+                        break;
                     }
-                    run.addBreak();
+                    if (answer.getFraction() > 0) {
+                        run.setBold(true);
+                        run.setText(answerText);
+                    } else {
+                        run.setText(answerText);
+                    }
+                    if (answer.getFraction() > 0) {
+                        run.setText(". " + answer.getText().replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
+                    } else {
+                        run.setText(". " + answer.getText().replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
+                    }
+                    i++;
                 }
 
                 // Write generalfeedback
                 paragraph = document.createParagraph();
                 run = paragraph.createRun();
-                run.setText("#loigiai:");
-                run.addBreak();
-                run.setText(question.getGeneralFeedback().getText().replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
-                run.addBreak();
-                if (question.getGeneralFeedback().getFile() != null) {
+                run.setText("Lời giải:");
+                generalFeedbackText = question.getGeneralFeedback().getText();
+                i = 0;
+                j = 0;
+                c = 0;
+                paragraph = document.createParagraph();
+                run = paragraph.createRun();
+                while (true) {
+                    j = generalFeedbackText.indexOf("<p style='text-align: center;'><img", i + 1);
+                    if (j == -1)
+                        break;
+                    run.setText(
+                            generalFeedbackText.toString().substring(i, j).replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
                     run.addPicture(
-                            new ByteArrayInputStream(Base64.getDecoder().decode(question.getGeneralFeedback().getFile().getValue())),
-                            Document.PICTURE_TYPE_JPEG,
-                            question.getGeneralFeedback().getFile().getName(),
-                            Units.toEMU(200),
-                            Units.toEMU(200));
-                    run.addBreak();
+                            new ByteArrayInputStream(Base64.getDecoder()
+                                    .decode(question.getGeneralFeedback().getFile().get(c).getValue())),
+                            Document.PICTURE_TYPE_JPEG, question.getGeneralFeedback().getFile().get(c).getName(),
+                            Units.toEMU(500), Units.toEMU(400));
+                    c++;
+                    i = generalFeedbackText.indexOf("/>", j) + 6;
+                }
+                if (c == 0) {
+                    run.setText(generalFeedbackText.replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
+                } else {
+                    run.setText(generalFeedbackText.substring(i, generalFeedbackText.length())
+                            .replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
                 }
             }
 
@@ -155,9 +217,9 @@ public class ConvertServiceImpl implements ConvertService {
         }
 
         if (convertType == 2) {
-         // Read file word.
+
+            // Read file word.
             StringBuffer strTmp = new StringBuffer();
-            List<String> strInputList = new ArrayList<>();
 
             File fileIO = new File(file.getOriginalFilename());
             OutputStream out = new FileOutputStream(fileIO);
@@ -168,13 +230,13 @@ public class ConvertServiceImpl implements ConvertService {
             List<XWPFParagraph> paragraphList = document.getParagraphs();
             int i_size = 0;
             List<Tag> tmpTags = new ArrayList<Tag>();
-            Tag tmpTag;
             Question questionTmp = new Question();
             QuestionText questionTextTmp = new QuestionText();
             QuestionName questionNameTmp = new QuestionName();
             List<Answer> lstAnswer = new ArrayList<>();
             Answer answerTmp;
             vn.com.fsoft.model.File fileTmp = null;
+            List<vn.com.fsoft.model.File> fileTmpList = new ArrayList<>();
             int iNameFileImg = 0;
             GeneralFeedback generalTmp = new GeneralFeedback();
             Quiz quiz = new Quiz();
@@ -185,54 +247,43 @@ public class ConvertServiceImpl implements ConvertService {
             questionTmp.setType("category");
             quiz.getQuestionList().add(questionTmp);
             catTmp = new Category();
-            catTmp.setText("$course$/top/[" + file.getOriginalFilename().replaceAll(".docx", "")+ "]");
+            catTmp.setText("$course$/top/[" + file.getOriginalFilename().replaceAll(".docx", "") + "]");
             questionTmp = new Question();
             questionTmp.setCategory(catTmp);
             questionTmp.setType("category");
             quiz.getQuestionList().add(questionTmp);
-            String[] lstStrTmp;
             int i_question_name = 1;
             for (XWPFParagraph paragraph : paragraphList) {
+                if (paragraph.getText().indexOf("Câu") == 0) {
+                    continue;
+                }
                 // Reset when #
-                if (paragraph.getText() != null && paragraph.getText().length() > 1 && paragraph.getText().indexOf("#") == 0) {
+                if (paragraph.getText() != null && paragraph.getText().length() > 1
+                        && paragraph.getText().indexOf("#") == 0) {
                     i_size += 1;
-                    if (strTmp.toString().length() > 0)
-                        strInputList.add(strTmp.toString());
-                    else
+                    if (strTmp.toString().length() == 0)
                         strTmp.append(paragraph.getText());
-                    strInputList.add(paragraph.getText());
                     switch (i_size) {
                     case 1:
                         // Handle tag
                         questionTmp = new Question();
-                        questionTmp.setShuffleanswers(true);
-                        questionTmp.setSingle(true);
-                        questionTmp.setDefaultGrade("1.0000000");
-                        questionTmp.setPenalty(0.3333333f);
-                        questionTmp.setHidden(0);
-                        questionTmp.setAnswernumbering("ABCD");
-                        questionTmp.setType("multichoice");
+                        setCommonQuestion(questionTmp);
                         questionNameTmp = new QuestionName();
-                        questionNameTmp.setText(String.valueOf(i_question_name));
+                        questionNameTmp.setText("Câu" + i_question_name);
                         questionTmp.setName(questionNameTmp);
                         i_question_name++;
-                        tmpTags = new ArrayList<Tag>();
                         lstAnswer = new ArrayList<Answer>();
-                        lstStrTmp = strTmp.toString().split(",");
-                        for (String tmp : lstStrTmp) {
-                            tmpTag = new Tag();
-                            tmpTag.setText(StringUtils.replace(tmp, "#", ""));
-                            tmpTags.add(tmpTag);
-                        }
+                        tmpTags = handleTag(strTmp);
                         questionTmp.setTags(tmpTags);
                         break;
                     case 2:
                         // Handle QuestionText.
                         questionTextTmp = new QuestionText();
                         questionTextTmp.setFormat("html");
-                        questionTextTmp.setText("<![CDATA[" + strTmp.toString() + "]]>");
-                        questionTextTmp.setFile(fileTmp);
-                        fileTmp = new vn.com.fsoft.model.File();;
+                        questionTextTmp.setText("<![CDATA[" + handleTextQuestion(strTmp) + "]]>");
+                        questionTextTmp.setFile(fileTmpList);
+                        fileTmp = new vn.com.fsoft.model.File();
+                        fileTmpList = new ArrayList<>();
                         questionTmp.setQuestiontext(questionTextTmp);
                         i_size += 1;
                         strTmp.setLength(0);
@@ -258,50 +309,42 @@ public class ConvertServiceImpl implements ConvertService {
                         // Handle generalfeedback
                         generalTmp = new GeneralFeedback();
                         generalTmp.setFormat("html");
-                        generalTmp.setFile(fileTmp);
+                        if (fileTmpList != null && !fileTmpList.isEmpty()) {
+                            generalTmp.setFile(fileTmpList);
+                        }
                         fileTmp = new vn.com.fsoft.model.File();
-                        generalTmp.setText("<![CDATA[" + strTmp.toString() + "]]>");
+                        fileTmpList = new ArrayList<>();
+                        generalTmp.setText("<![CDATA[" + handleTextQuestion(strTmp) + "]]>");
                         questionTmp.setGeneralFeedback(generalTmp);
                         quiz.getQuestionList().add(questionTmp);
-                        // Handle tag
+                        // Handle tags.
+                        i_size = 1;
                         strTmp.setLength(0);
                         strTmp.append(paragraph.getText());
+                        // Handle tag
                         questionTmp = new Question();
-                        questionTmp.setShuffleanswers(true);
-                        questionTmp.setSingle(true);
-                        questionTmp.setDefaultGrade("1.0000000");
-                        questionTmp.setPenalty(0.3333333f);
-                        questionTmp.setHidden(0);
-                        questionTmp.setAnswernumbering("ABCD");
-                        questionTmp.setType("multichoice");
+                        setCommonQuestion(questionTmp);
                         questionNameTmp = new QuestionName();
                         questionNameTmp.setText(String.valueOf(i_question_name));
                         questionTmp.setName(questionNameTmp);
                         i_question_name++;
-                        tmpTags = new ArrayList<Tag>();
                         lstAnswer = new ArrayList<Answer>();
-                        lstStrTmp = strTmp.toString().split(",");
-                        for (String tmp : lstStrTmp) {
-                            tmpTag = new Tag();
-                            tmpTag.setText(tmp.replaceAll("#", ""));
-                            tmpTags.add(tmpTag);
-                        }
+                        tmpTags = handleTag(strTmp);
                         questionTmp.setTags(tmpTags);
-                        i_size = 1;
                     default:
                         break;
                     }
                     strTmp.setLength(0);
                     continue;
                 }
-                for(XWPFRun item : paragraph.getRuns()) {
+                for (XWPFRun item : paragraph.getRuns()) {
                     if (item.getText(item.getTextPosition()) != null) {
                         if (strTmp.toString().length() == 0) {
                             strTmp.append("<p>");
                         }
                         strTmp.append(item.getText(item.getTextPosition()));
                     }
-                    for(XWPFPicture itemImg : item.getEmbeddedPictures()) {
+                    for (XWPFPicture itemImg : item.getEmbeddedPictures()) {
                         fileTmp = new vn.com.fsoft.model.File();
                         fileTmp.setEncoding("base64");
                         iNameFileImg++;
@@ -311,17 +354,21 @@ public class ConvertServiceImpl implements ConvertService {
                             strTmp.append("</p>");
                         }
 
-                        strTmp.append("<p style='text-align: center;'><img src='@@PLUGINFILE@@/"+fileTmp.getName()+"' width='400' height='300' role='presentation' class='img-responsive atto_image_button_text-bottom'/></p>");
+                        strTmp.append("<p style='text-align: center;'><img src='@@PLUGINFILE@@/" + fileTmp.getName()
+                                + "' width='400' height='300' role='presentation' class='img-responsive atto_image_button_text-bottom'/></p><p>");
                         fileTmp.setValue(Base64.getEncoder().encodeToString(itemImg.getPictureData().getData()));
+                        fileTmpList.add(fileTmp);
                     }
                 }
                 strTmp.append("\n");
             }
-            strInputList.add(strTmp.toString());
             generalTmp = new GeneralFeedback();
             generalTmp.setFormat("html");
-            generalTmp.setFile(fileTmp);
+            generalTmp.setText(handleTextQuestion(strTmp));
             generalTmp.setText("<![CDATA[" + strTmp.toString() + "]]>");
+            if (fileTmpList != null && !fileTmpList.isEmpty()) {
+                generalTmp.setFile(fileTmpList);
+            }
             questionTmp.setGeneralFeedback(generalTmp);
             document.close();
             fis.close();
@@ -336,5 +383,38 @@ public class ConvertServiceImpl implements ConvertService {
         }
 
         return res;
+    }
+
+    private String handleTextQuestion(final StringBuffer strTmp) {
+        if (strTmp.toString().endsWith("<p>\n")) {
+            strTmp.setLength(strTmp.length() - 4);
+        } else {
+            strTmp.setLength(strTmp.length() - 1);
+            strTmp.append("</p>");
+        }
+        strTmp.append("\n");
+        return strTmp.toString();
+    }
+
+    private List<Tag> handleTag(final StringBuffer strTmp) {
+        List<Tag> tmpTags = new ArrayList<Tag>();
+        String[] lstStrTmp = strTmp.toString().split(",");
+        Tag tmpTag;
+        for (String tmp : lstStrTmp) {
+            tmpTag = new Tag();
+            tmpTag.setText(StringUtils.replace(tmp, "#", ""));
+            tmpTags.add(tmpTag);
+        }
+        return tmpTags;
+    }
+
+    private void setCommonQuestion(Question questionTmp) {
+        questionTmp.setShuffleanswers(true);
+        questionTmp.setSingle(true);
+        questionTmp.setDefaultGrade("1.0000000");
+        questionTmp.setPenalty(0.3333333f);
+        questionTmp.setHidden(0);
+        questionTmp.setAnswernumbering("ABCD");
+        questionTmp.setType("multichoice");
     }
 }

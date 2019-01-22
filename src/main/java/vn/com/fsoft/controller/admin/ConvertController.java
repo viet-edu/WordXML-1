@@ -1,6 +1,5 @@
 package vn.com.fsoft.controller.admin;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
@@ -21,18 +20,13 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import vn.com.fsoft.common.Constants;
-import vn.com.fsoft.common.XMLConverter;
 import vn.com.fsoft.dto.ConvertFormRequest;
 import vn.com.fsoft.dto.ConvertFormResponse;
-import vn.com.fsoft.model.Answer;
 import vn.com.fsoft.service.ConvertService;
 
 @Controller
 @RequestMapping("admin")
 public class ConvertController {
-
-    @Autowired
-    private XMLConverter converter;
 
     @Autowired
     private ConvertService convertService;
@@ -55,15 +49,10 @@ public class ConvertController {
         } else {
             ConvertFormResponse res = new ConvertFormResponse();
             try {
-                try {
-                    res = convertService.convert(convertFormRequest);
-                } catch (XMLStreamException | FactoryConfigurationError e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                res = convertService.convert(convertFormRequest);
                 res.setMessage("Convert thành công!");
                 res.setType("success");
-            } catch (InvalidFormatException | IOException | JAXBException e) {
+            } catch (InvalidFormatException | IOException | JAXBException | XMLStreamException | FactoryConfigurationError e) {
                 res.setType("error");
                 res.setMessage(e.getMessage());
                 e.printStackTrace();
@@ -71,19 +60,5 @@ public class ConvertController {
             redirAttrs.addFlashAttribute("res", res);
             return new ModelAndView("redirect:/admin/Convert");
         }
-    }
-
-    @GetMapping("/WordToXML")
-    public String wordToXML() {
-        try {
-            Answer answer = new Answer();
-            answer.setFormat("html");
-            answer.setFraction(100);
-            answer.setText("Answer text");
-            converter.convertFromObjectToXML(answer, "D:\\dev2\\WordXML\\requirement\\answer_output.xml");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "admin/xml-to-word";
     }
 }

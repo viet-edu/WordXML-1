@@ -1,7 +1,9 @@
 /**
- * 
+ *
  */
 package vn.com.fsoft.model;
+
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -17,7 +19,7 @@ import lombok.Setter;
  *
  * Date: Jan 18, 2019
  *
- * Copyright 
+ * Copyright
  *
  * Modification Logs:
  * DATE                 AUTHOR          DESCRIPTION
@@ -30,5 +32,5 @@ import lombok.Setter;
 public class QuestionText extends TypeCommon{
 
     @XmlElement(name = "file")
-    private File file;
+    private List<File> file;
 }
