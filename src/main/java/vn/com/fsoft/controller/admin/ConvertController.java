@@ -7,7 +7,6 @@ import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.jdom2.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,7 +52,7 @@ public class ConvertController {
                 res = convertService.convert(convertFormRequest);
                 res.setMessage("Convert thành công!");
                 res.setType("success");
-            } catch (InvalidFormatException | IOException | JAXBException | XMLStreamException | FactoryConfigurationError | JDOMException e) {
+            } catch (InvalidFormatException | IOException | JAXBException | XMLStreamException | FactoryConfigurationError e) {
                 res.setType("error");
                 res.setMessage(e.getMessage());
                 e.printStackTrace();

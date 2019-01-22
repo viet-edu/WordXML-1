@@ -18,7 +18,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.io.FileUtils;
-import org.jdom2.JDOMException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.InputSource;
@@ -64,7 +63,7 @@ public class XMLConverter {
         return unmarshaller.unmarshal(is);
     }
 
-    public void getCommentsFromXML(MultipartFile file, Quiz quiz) throws JDOMException, IOException, XMLStreamException {
+    public void getCommentsFromXML(MultipartFile file, Quiz quiz) throws IOException, XMLStreamException {
 
         if (quiz == null || quiz.getQuestionList() == null || quiz.getQuestionList().isEmpty()) {
             return;

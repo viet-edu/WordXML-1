@@ -25,7 +25,6 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFPicture;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.jdom2.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -59,7 +58,7 @@ public class ConvertServiceImpl implements ConvertService {
 
     @Override
     public ConvertFormResponse convert(ConvertFormRequest convertFormRequest)
-            throws IOException, JAXBException, InvalidFormatException, XMLStreamException, FactoryConfigurationError, JDOMException {
+            throws IOException, JAXBException, InvalidFormatException, XMLStreamException, FactoryConfigurationError {
         MultipartFile file = convertFormRequest.getFile();
         Integer convertType = convertFormRequest.getConvertType();
         ConvertFormResponse res = new ConvertFormResponse();
@@ -360,10 +359,6 @@ public class ConvertServiceImpl implements ConvertService {
                             strTmp.append("<p>");
                         }
                         strTmp.append(item.getText(item.getTextPosition()));
-                        if (StringUtils.startsWithAny(item.getText(item.getTextPosition()), "#A.", "#B.", "#C.", "#D.")
-                                && item.isBold()) {
-                            strTmp.append("BOLD");
-                        }
                     }
                     for (XWPFPicture itemImg : item.getEmbeddedPictures()) {
                         fileTmp = new vn.com.fsoft.model.File();
