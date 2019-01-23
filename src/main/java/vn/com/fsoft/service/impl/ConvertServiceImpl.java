@@ -65,7 +65,7 @@ public class ConvertServiceImpl implements ConvertService {
         MultipartFile file = convertFormRequest.getFile();
         Integer convertType = convertFormRequest.getConvertType();
         ConvertFormResponse res = new ConvertFormResponse();
-        String uploadPath = servletContext.getContext("resources/upload/").getContextPath();
+        String uploadPath = servletContext.getContext("resources/uploads/").getContextPath();
 
         if (convertType == 1) {
             Quiz quiz = (Quiz) converter.convertFromXMLToObject(file, Quiz.class);
