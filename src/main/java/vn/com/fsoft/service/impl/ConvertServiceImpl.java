@@ -11,6 +11,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
@@ -26,7 +27,6 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFPicture;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,8 +49,11 @@ public class ConvertServiceImpl implements ConvertService {
     @Autowired
     private XMLConverter converter;
 
-    @Value("${storage.uploadPath}")
-    private String uploadPath;
+    //@Value("${storage.uploadPath}")
+    //private String uploadPath;
+
+    @Autowired
+    private ServletContext servletContext;
 
     private static final String REGEX_REMOVE_ALL_HTML_TAG = "<[^>]*>";
     private static final String[] ANSWER_NUMBERING_ARRAY = {"A.", "B.", "C.", "D."};
@@ -62,6 +65,7 @@ public class ConvertServiceImpl implements ConvertService {
         MultipartFile file = convertFormRequest.getFile();
         Integer convertType = convertFormRequest.getConvertType();
         ConvertFormResponse res = new ConvertFormResponse();
+        String uploadPath = servletContext.getContext("resources/upload/").getContextPath();
 
         if (convertType == 1) {
             Quiz quiz = (Quiz) converter.convertFromXMLToObject(file, Quiz.class);
