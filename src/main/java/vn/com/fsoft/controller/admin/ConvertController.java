@@ -52,7 +52,7 @@ public class ConvertController {
                 res = convertService.convert(convertFormRequest);
                 res.setMessage("Convert thành công!");
                 res.setType("success");
-            } catch (InvalidFormatException | IOException | JAXBException | XMLStreamException | FactoryConfigurationError e) {
+            } catch (Exception e) {
                 res.setType("error");
                 res.setMessage(e.getMessage());
                 e.printStackTrace();

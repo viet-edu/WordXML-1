@@ -11,7 +11,6 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
@@ -27,6 +26,7 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFPicture;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,11 +49,8 @@ public class ConvertServiceImpl implements ConvertService {
     @Autowired
     private XMLConverter converter;
 
-    //@Value("${storage.uploadPath}")
-    //private String uploadPath;
-
-    @Autowired
-    private ServletContext servletContext;
+    @Value("${storage.uploadPath}")
+    private String uploadPath;
 
     private static final String REGEX_REMOVE_ALL_HTML_TAG = "<[^>]*>";
     private static final String[] ANSWER_NUMBERING_ARRAY = {"A.", "B.", "C.", "D."};
@@ -65,16 +62,6 @@ public class ConvertServiceImpl implements ConvertService {
         MultipartFile file = convertFormRequest.getFile();
         Integer convertType = convertFormRequest.getConvertType();
         ConvertFormResponse res = new ConvertFormResponse();
-
-        // Thư mục gốc upload file.
-        String uploadRootPath = servletContext.getRealPath("resources/uploads");
-        System.out.println("uploadRootPath=" + uploadRootPath);
-
-        File uploadRootDir = new File(uploadRootPath);
-        // Tạo thư mục gốc upload nếu nó không tồn tại.
-        if (!uploadRootDir.exists()) {
-            uploadRootDir.mkdirs();
-        }
 
         if (convertType == 1) {
             Quiz quiz = (Quiz) converter.convertFromXMLToObject(file, Quiz.class);
@@ -225,8 +212,7 @@ public class ConvertServiceImpl implements ConvertService {
                 String [] arrTmp = category.split("[/]");
                 fileName = arrTmp[arrTmp.length - 1].replaceAll("[^a-zA-Z0-9- _\\u0080-\\u9fff]", "");;
             }
-            String filePath = uploadRootDir.getAbsolutePath() + "/word/" + fileName + ".docx";
-            System.out.println("FILE PATH" + filePath);
+            String filePath = uploadPath + "word\\" + fileName + ".docx";
             FileOutputStream out = new FileOutputStream(new File(filePath));
             document.write(out);
             out.close();
@@ -406,8 +392,7 @@ public class ConvertServiceImpl implements ConvertService {
             quiz.getQuestionList().add(questionTmp);
 
             String fileName = (file.getOriginalFilename()).replaceAll(".docx", "");
-            String filePath = uploadRootDir.getAbsolutePath() + "/xml/" + fileName + ".xml";
-            System.out.println("FILE PATH" + filePath);
+            String filePath = uploadPath + "xml\\" + fileName + ".xml";
             converter.convertFromObjectToXML(quiz, filePath);
             res.setFileName(fileName);
             res.setFilePath("xml/" + fileName + ".xml");
