@@ -20,9 +20,9 @@ public class Securityhandler implements AuthenticationSuccessHandler {
             Authentication authentication) throws IOException, ServletException {
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
         if (roles.contains("ROLE_ADMIN")) {
-            response.sendRedirect("/WordXML/admin");
+            response.sendRedirect("/admin");
         } else {
-            response.sendRedirect("/WordXML");
+            response.sendRedirect("/");
         }
     }
 
