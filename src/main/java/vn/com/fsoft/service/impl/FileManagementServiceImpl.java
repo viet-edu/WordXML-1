@@ -23,7 +23,7 @@ public class FileManagementServiceImpl implements FileManagementService {
         FileConverted fileConverted;
         String tomcatBase = System.getProperty("catalina.base");
         String webApp = String.format(Constants.PATH_CONST, tomcatBase);
-        System.out.println(webApp);
+        System.out.println("1--------------" +webApp);
 
         File folder = new File( webApp + "\\" + type);
         File[] listOfFiles = folder.listFiles();
