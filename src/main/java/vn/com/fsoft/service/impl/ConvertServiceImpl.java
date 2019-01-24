@@ -82,6 +82,7 @@ public class ConvertServiceImpl implements ConvertService {
             int i = 0;
             int j = 0;
             int c = 0;
+            int q = 0;
             StringBuffer str = new StringBuffer();
             for (Question question : quiz.getQuestionList()) {
 
@@ -96,7 +97,7 @@ public class ConvertServiceImpl implements ConvertService {
                 if (StringUtils.indexOfAny(question.getName().getText(), "Câu", "câu", "Cau", "cau") == -1) {
                     run.setText("Câu ");
                 }
-                run.setText(question.getName().getText() + "(" + question.getQuestionId() + "): ");
+                run.setText(++q + "(" + question.getQuestionId() + "): ");
 
                 // Write tag
                 if (question.getTags() != null) {
