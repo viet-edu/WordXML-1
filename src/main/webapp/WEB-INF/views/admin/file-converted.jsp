@@ -5,7 +5,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="block-header align-center">
-                <h2>DANH SÁCH FILE CONVERTED</h2>
+                <h2>DANH SÁCH FILE CONVERTED</h2>
             </div>
             <!-- Basic Table -->
             <div class="row clearfix">
@@ -25,7 +25,7 @@
                                         <tr>
                                             <td>${item.fileName}</td>
                                             <td><c:url value="/resources/uploads/${item.filePath}" /></td>
-                                            <td><a href="<c:url value="/resources/uploads/${item.filePath}" />" style="color: red" target="blank">Tải xuống</a></td>
+                                            <td><a download href="<c:url value="/resources/uploads/${item.filePath}" />" style="color: red" target="blank">Tải xuống</a></td>
                                         </tr>
                                     </c:forEach>
                                 </tbody>
