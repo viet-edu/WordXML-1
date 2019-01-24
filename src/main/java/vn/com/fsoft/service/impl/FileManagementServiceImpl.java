@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import vn.com.fsoft.common.Constants;
 import vn.com.fsoft.model.FileConverted;
 import vn.com.fsoft.service.FileManagementService;
 
@@ -20,7 +21,10 @@ public class FileManagementServiceImpl implements FileManagementService {
     public List<FileConverted> getFileConverted(String type) {
         List<FileConverted> result = new ArrayList<>();
         FileConverted fileConverted;
-        File folder = new File(uploadPath + "\\" + type);
+        String tomcatBase = System.getProperty("catalina.base");
+        String webApp = String.format(Constants.PATH_CONST, tomcatBase);
+
+        File folder = new File( webApp + "\\" + type);
         File[] listOfFiles = folder.listFiles();
 
         for (int i = 0; i < listOfFiles.length; i++) {
