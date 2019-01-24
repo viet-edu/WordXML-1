@@ -24,7 +24,7 @@ public class FileManagementServiceImpl implements FileManagementService {
         List<FileConverted> result = new ArrayList<>();
         FileConverted fileConverted;
         String tomcatBase = System.getProperty("catalina.base");
-        String webApp = tomcatBase + uploadPath;
+        String webApp = tomcatBase + uploadPath + type;
         System.out.println("1--------------" +webApp);
 
         File folder = new File( webApp);
