@@ -117,27 +117,27 @@ public class ConvertServiceImpl implements ConvertService {
                 paragraph = document.createParagraph();
                 run = paragraph.createRun();
                 questionText = question.getQuestiontext().getText();
-                i = 0;
-                j = 0;
-                c = 0;
+                int i_1 = 0;
+                int j_1 = 0;
+                int c_1 = 0;
                 while (true) {
-                    j = questionText.indexOf("<img", i + 1);
-                    if (j == -1)
+                    j_1 = questionText.indexOf("<img", i_1 + 1);
+                    if (j_1 == -1)
                         break;
-                    run.setText(questionText.toString().substring(i, j).replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
+                    run.setText(questionText.toString().substring(i_1, j_1).replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
                     run.addPicture(
                             new ByteArrayInputStream(
-                                    Base64.getDecoder().decode(question.getQuestiontext().getFile().get(c).getValue())),
-                            Document.PICTURE_TYPE_JPEG, question.getQuestiontext().getFile().get(c).getName(),
+                                    Base64.getDecoder().decode(question.getQuestiontext().getFile().get(c_1).getValue())),
+                            Document.PICTURE_TYPE_JPEG, question.getQuestiontext().getFile().get(c_1).getName(),
                             Units.toEMU(500), Units.toEMU(400));
-                    c++;
-                    i = questionText.indexOf("/>", j) + 6;
+                    c_1++;
+                    i_1 = questionText.indexOf(">", j_1+1);
                 }
-                if (c == 0) {
+                if (c_1 == 0) {
                     run.setText(questionText.replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
                 } else {
                     run.setText(
-                            questionText.substring(i, questionText.length()).replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
+                            questionText.substring(i_1, questionText.length()).replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
                 }
 
                 // Write answer
@@ -180,29 +180,29 @@ public class ConvertServiceImpl implements ConvertService {
                 run = paragraph.createRun();
                 run.setText("Lời giải:");
                 generalFeedbackText = question.getGeneralFeedback().getText();
-                i = 0;
-                j = 0;
-                c = 0;
+                int i_2 = 0;
+                int j_2 = 0;
+                int c_2 = 0;
                 paragraph = document.createParagraph();
                 run = paragraph.createRun();
                 while (true) {
-                    j = generalFeedbackText.indexOf("<img", i + 1);
-                    if (j == -1)
+                    j_2 = generalFeedbackText.indexOf("<img", i_2 + 1);
+                    if (j_2 == -1)
                         break;
                     run.setText(
-                            generalFeedbackText.toString().substring(i, j).replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
+                            generalFeedbackText.toString().substring(i_2, j_2).replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
                     run.addPicture(
                             new ByteArrayInputStream(Base64.getDecoder()
-                                    .decode(question.getGeneralFeedback().getFile().get(c).getValue())),
-                            Document.PICTURE_TYPE_JPEG, question.getGeneralFeedback().getFile().get(c).getName(),
+                                    .decode(question.getGeneralFeedback().getFile().get(c_2).getValue())),
+                            Document.PICTURE_TYPE_JPEG, question.getGeneralFeedback().getFile().get(c_2).getName(),
                             Units.toEMU(500), Units.toEMU(400));
-                    c++;
-                    i = generalFeedbackText.indexOf("/>", j) + 6;
+                    c_2++;
+                    i_2 = generalFeedbackText.indexOf(">", j_2+1);
                 }
-                if (c == 0) {
+                if (c_2 == 0) {
                     run.setText(generalFeedbackText.replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
                 } else {
-                    run.setText(generalFeedbackText.substring(i, generalFeedbackText.length())
+                    run.setText(generalFeedbackText.substring(i_2, generalFeedbackText.length())
                             .replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
                 }
             }
