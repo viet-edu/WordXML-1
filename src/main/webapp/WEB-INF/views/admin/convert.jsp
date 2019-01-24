@@ -15,7 +15,7 @@
                     <c:if test="${res != null}">
                         <c:if test="${res.type == 'success'}">
                             <div class="alert alert-info">
-                                <strong>${res.message}</strong> <a href="<c:url value="/resources/uploads/${res.filePath}" />" style="color: red" target="blank">Tải xuống file tại đây</a>
+                                <strong>${res.message}</strong> <a download href="<c:url value="/resources/uploads/${res.filePath}" />" style="color: red" target="blank">Tải xuống file tại đây</a>
                             </div>
                         </c:if>
                         <c:if test="${res.type == 'error'}">
@@ -40,7 +40,7 @@
                         </div>
                         <div class="row clearfix">
                             <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
-                                <label for="description">Chọn loại convert:<span class="col-red">(*):</span></label>
+                                <label for="description">Chọn loại convert:<span class="col-red">(*):</span></label>
                             </div>
                             <div class="col-lg-5 col-md-5 col-sm-4 col-xs-4">
                                 <div class="form-group">
