@@ -64,7 +64,7 @@ public class ConvertServiceImpl implements ConvertService {
         Integer convertType = convertFormRequest.getConvertType();
         ConvertFormResponse res = new ConvertFormResponse();
         String tomcatBase = System.getProperty("catalina.base");
-        String webApp = String.format(Constants.PATH_CONST, tomcatBase);
+        String webApp = tomcatBase + uploadPath;
 
 
         if (convertType == 1) {
