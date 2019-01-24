@@ -52,8 +52,8 @@ public class ConvertServiceImpl implements ConvertService {
     private static final String REGEX_REMOVE_ALL_HTML_TAG = "<[^>]*>";
     private static final String[] ANSWER_NUMBERING_ARRAY = {"A.", "B.", "C.", "D."};
     private static final String[] GENERAL_FEEDBACK_ARRAY = {"Lời giải"};
-    private static final Integer MAX_WIDTH = 300;
-    private static final Integer MAX_HEIGHT = 250;
+    private static final Integer MAX_WIDTH = 200;
+    private static final Integer MAX_HEIGHT = 122;
 
     @Override
     public ConvertFormResponse convert(ConvertFormRequest convertFormRequest)
