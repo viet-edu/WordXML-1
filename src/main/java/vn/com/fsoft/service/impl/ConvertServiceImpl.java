@@ -62,6 +62,9 @@ public class ConvertServiceImpl implements ConvertService {
         MultipartFile file = convertFormRequest.getFile();
         Integer convertType = convertFormRequest.getConvertType();
         ConvertFormResponse res = new ConvertFormResponse();
+        String tomcatBase = System.getProperty("catalina.base");
+        String webApp = String.format(Constants.PATH_CONST, tomcatBase);
+
 
         if (convertType == 1) {
             Quiz quiz = (Quiz) converter.convertFromXMLToObject(file, Quiz.class);
@@ -212,7 +215,7 @@ public class ConvertServiceImpl implements ConvertService {
                 String [] arrTmp = category.split("[/]");
                 fileName = arrTmp[arrTmp.length - 1].replaceAll("[^a-zA-Z0-9- _\\u0080-\\u9fff]", "");;
             }
-            String filePath = uploadPath + "word\\" + fileName + ".docx";
+            String filePath = webApp + "\\word\\" + fileName + ".docx";
             FileOutputStream out = new FileOutputStream(new File(filePath));
             document.write(out);
             out.close();
@@ -392,7 +395,7 @@ public class ConvertServiceImpl implements ConvertService {
             quiz.getQuestionList().add(questionTmp);
 
             String fileName = (file.getOriginalFilename()).replaceAll(".docx", "");
-            String filePath = uploadPath + "xml\\" + fileName + ".xml";
+            String filePath = webApp + "\\xml\\" + fileName + ".xml";
             converter.convertFromObjectToXML(quiz, filePath);
             res.setFileName(fileName);
             res.setFilePath("xml/" + fileName + ".xml");
