@@ -52,8 +52,10 @@ public class ConvertServiceImpl implements ConvertService {
     private static final String REGEX_REMOVE_ALL_HTML_TAG = "<[^>]*>";
     private static final String[] ANSWER_NUMBERING_ARRAY = {"A.", "B.", "C.", "D."};
     private static final String[] GENERAL_FEEDBACK_ARRAY = {"Lời giải"};
-    private static final Integer MAX_WIDTH = 300;
-    private static final Integer MAX_HEIGHT = 122;
+    private static final Integer MAX_WIDTH_XML_WORD = 350;
+    private static final Integer MAX_HEIGHT_XML_WORD = 220;
+    private static final Integer MAX_WIDTH_WORD_XML = 300;
+    private static final Integer MAX_HEIGHT_WORD_XML = 200;
 
     @Override
     public ConvertFormResponse convert(ConvertFormRequest convertFormRequest)
@@ -129,7 +131,7 @@ public class ConvertServiceImpl implements ConvertService {
                             new ByteArrayInputStream(
                                     Base64.getDecoder().decode(question.getQuestiontext().getFile().get(c_1).getValue())),
                             Document.PICTURE_TYPE_JPEG, question.getQuestiontext().getFile().get(c_1).getName(),
-                            Units.toEMU(MAX_WIDTH), Units.toEMU(MAX_HEIGHT));
+                            Units.toEMU(MAX_WIDTH_XML_WORD), Units.toEMU(MAX_HEIGHT_XML_WORD));
                     c_1++;
                     i_1 = questionText.indexOf(">", j_1);
                 }
@@ -137,7 +139,11 @@ public class ConvertServiceImpl implements ConvertService {
                     run.setText(questionText.replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
                 } else {
                     run.setText(
-                            questionText.substring(i_1+2, questionText.length()).replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
+                            questionText
+                                .substring(i_1+2, questionText.length())
+                                .replaceAll(REGEX_REMOVE_ALL_HTML_TAG, "")
+                                .replaceAll("</p>", "")
+                                .replaceAll("/p>", ""));
                 }
 
                 // Write answer
@@ -195,7 +201,7 @@ public class ConvertServiceImpl implements ConvertService {
                             new ByteArrayInputStream(Base64.getDecoder()
                                     .decode(question.getGeneralFeedback().getFile().get(c_2).getValue())),
                             Document.PICTURE_TYPE_JPEG, question.getGeneralFeedback().getFile().get(c_2).getName(),
-                            Units.toEMU(MAX_WIDTH), Units.toEMU(MAX_HEIGHT));
+                            Units.toEMU(MAX_WIDTH_XML_WORD), Units.toEMU(MAX_HEIGHT_XML_WORD));
                     c_2++;
                     i_2 = generalFeedbackText.indexOf(">", j_2);
                 }
@@ -294,6 +300,10 @@ public class ConvertServiceImpl implements ConvertService {
                         // Handle QuestionText.
                         questionTextTmp = new QuestionText();
                         questionTextTmp.setFormat("html");
+                        if (strTmp.indexOf("<iframe") != -1) {
+                            strTmp.insert(strTmp.indexOf("<iframe"), "<p style='text-align: center;'>");
+                            strTmp.insert(strTmp.indexOf("</iframe>") + 9, "</p>");
+                        }
                         questionTextTmp.setText("<![CDATA[" + handleTextQuestion(strTmp) + "]]>");
                         questionTextTmp.setFile(fileTmpList);
                         fileTmp = new vn.com.fsoft.model.File();
@@ -378,7 +388,7 @@ public class ConvertServiceImpl implements ConvertService {
                         }
 
                         strTmp.append("<p style='text-align: center;'><img src='@@PLUGINFILE@@/" + fileTmp.getName()
-                                + "' width='"+MAX_WIDTH+"' height='"+MAX_HEIGHT+"' role='presentation' class='img-responsive atto_image_button_text-bottom'/></p><p>");
+                                + "' width='"+MAX_WIDTH_WORD_XML+"' height='"+MAX_HEIGHT_WORD_XML+"' role='presentation' class='img-responsive atto_image_button_text-bottom'/></p><p>");
                         fileTmp.setValue(Base64.getEncoder().encodeToString(itemImg.getPictureData().getData()));
                         fileTmpList.add(fileTmp);
                     }
