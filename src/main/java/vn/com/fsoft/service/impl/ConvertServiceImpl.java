@@ -131,13 +131,13 @@ public class ConvertServiceImpl implements ConvertService {
                             Document.PICTURE_TYPE_JPEG, question.getQuestiontext().getFile().get(c_1).getName(),
                             Units.toEMU(500), Units.toEMU(400));
                     c_1++;
-                    i_1 = questionText.indexOf(">", j_1+1);
+                    i_1 = questionText.indexOf(">", j_1);
                 }
                 if (c_1 == 0) {
                     run.setText(questionText.replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
                 } else {
                     run.setText(
-                            questionText.substring(i_1, questionText.length()).replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
+                            questionText.substring(i_1+2, questionText.length()).replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
                 }
 
                 // Write answer
@@ -197,12 +197,12 @@ public class ConvertServiceImpl implements ConvertService {
                             Document.PICTURE_TYPE_JPEG, question.getGeneralFeedback().getFile().get(c_2).getName(),
                             Units.toEMU(500), Units.toEMU(400));
                     c_2++;
-                    i_2 = generalFeedbackText.indexOf(">", j_2+1);
+                    i_2 = generalFeedbackText.indexOf(">", j_2);
                 }
                 if (c_2 == 0) {
                     run.setText(generalFeedbackText.replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
                 } else {
-                    run.setText(generalFeedbackText.substring(i_2, generalFeedbackText.length())
+                    run.setText(generalFeedbackText.substring(i_2+2, generalFeedbackText.length())
                             .replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
                 }
             }
