@@ -121,7 +121,7 @@ public class ConvertServiceImpl implements ConvertService {
                 j = 0;
                 c = 0;
                 while (true) {
-                    j = questionText.indexOf("<p style='text-align: center;'><img", i + 1);
+                    j = questionText.indexOf("<img", i + 1);
                     if (j == -1)
                         break;
                     run.setText(questionText.toString().substring(i, j).replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
@@ -186,7 +186,7 @@ public class ConvertServiceImpl implements ConvertService {
                 paragraph = document.createParagraph();
                 run = paragraph.createRun();
                 while (true) {
-                    j = generalFeedbackText.indexOf("<p style='text-align: center;'><img", i + 1);
+                    j = generalFeedbackText.indexOf("<img", i + 1);
                     if (j == -1)
                         break;
                     run.setText(
