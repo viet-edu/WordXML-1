@@ -52,6 +52,8 @@ public class ConvertServiceImpl implements ConvertService {
     private static final String REGEX_REMOVE_ALL_HTML_TAG = "<[^>]*>";
     private static final String[] ANSWER_NUMBERING_ARRAY = {"A.", "B.", "C.", "D."};
     private static final String[] GENERAL_FEEDBACK_ARRAY = {"Lời giải"};
+    private static final Integer MAX_WIDTH = 300;
+    private static final Integer MAX_HEIGHT = 250;
 
     @Override
     public ConvertFormResponse convert(ConvertFormRequest convertFormRequest)
@@ -127,7 +129,7 @@ public class ConvertServiceImpl implements ConvertService {
                             new ByteArrayInputStream(
                                     Base64.getDecoder().decode(question.getQuestiontext().getFile().get(c_1).getValue())),
                             Document.PICTURE_TYPE_JPEG, question.getQuestiontext().getFile().get(c_1).getName(),
-                            Units.toEMU(500), Units.toEMU(400));
+                            Units.toEMU(MAX_WIDTH), Units.toEMU(MAX_HEIGHT));
                     c_1++;
                     i_1 = questionText.indexOf(">", j_1);
                 }
@@ -193,7 +195,7 @@ public class ConvertServiceImpl implements ConvertService {
                             new ByteArrayInputStream(Base64.getDecoder()
                                     .decode(question.getGeneralFeedback().getFile().get(c_2).getValue())),
                             Document.PICTURE_TYPE_JPEG, question.getGeneralFeedback().getFile().get(c_2).getName(),
-                            Units.toEMU(500), Units.toEMU(400));
+                            Units.toEMU(MAX_WIDTH), Units.toEMU(MAX_HEIGHT));
                     c_2++;
                     i_2 = generalFeedbackText.indexOf(">", j_2);
                 }
@@ -376,7 +378,7 @@ public class ConvertServiceImpl implements ConvertService {
                         }
 
                         strTmp.append("<p style='text-align: center;'><img src='@@PLUGINFILE@@/" + fileTmp.getName()
-                                + "' width='400' height='300' role='presentation' class='img-responsive atto_image_button_text-bottom'/></p><p>");
+                                + "' width='"+MAX_WIDTH+"' height='"+MAX_HEIGHT+"' role='presentation' class='img-responsive atto_image_button_text-bottom'/></p><p>");
                         fileTmp.setValue(Base64.getEncoder().encodeToString(itemImg.getPictureData().getData()));
                         fileTmpList.add(fileTmp);
                     }
