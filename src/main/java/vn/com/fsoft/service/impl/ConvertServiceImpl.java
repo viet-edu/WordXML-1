@@ -216,7 +216,7 @@ public class ConvertServiceImpl implements ConvertService {
                 String [] arrTmp = category.split("[/]");
                 fileName = arrTmp[arrTmp.length - 1].replaceAll("[^a-zA-Z0-9- _\\u0080-\\u9fff]", "");;
             }
-            String filePath = webApp + "\\word\\" + fileName + ".docx";
+            String filePath = webApp + "//word//" + fileName + ".docx";
             FileOutputStream out = new FileOutputStream(new File(filePath));
             document.write(out);
             out.close();
