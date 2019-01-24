@@ -27,4 +27,6 @@ public class Constants {
     public static final Integer ROLE_USER = 2;
 
     public static final Integer PASS_SCORE = 8;
+    
+    public static final String PATH_CONST = "%s\\webapps\\expanded\\resources\\updates";
 }
