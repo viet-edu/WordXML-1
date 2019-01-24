@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import vn.com.fsoft.common.Constants;
 import vn.com.fsoft.model.FileConverted;
 import vn.com.fsoft.service.FileManagementService;
+import java.util.Arrays;
+import java.io.FilenameFilter;
 
 @Service
 public class FileManagementServiceImpl implements FileManagementService {
@@ -25,7 +27,15 @@ public class FileManagementServiceImpl implements FileManagementService {
         String webApp = String.format(Constants.PATH_CONST, tomcatBase);
         System.out.println("1--------------" +webApp);
 
-        File folder = new File( webApp + "\\" + type);
+        File folder = new File( webApp);
+        String[] directories = folder.list(new FilenameFilter() {
+            @Override
+            public boolean accept(File current, String name) {
+              return new File(current, name).isDirectory();
+            }
+          });
+        System.out.println("----------------------------------------------------------");
+        System.out.println(Arrays.toString(directories));
         File[] listOfFiles = folder.listFiles();
 
         for (int i = 0; i < listOfFiles.length; i++) {
