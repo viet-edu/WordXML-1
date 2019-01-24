@@ -396,7 +396,7 @@ public class ConvertServiceImpl implements ConvertService {
             quiz.getQuestionList().add(questionTmp);
 
             String fileName = (file.getOriginalFilename()).replaceAll(".docx", "");
-            String filePath = webApp + "\\xml\\" + fileName + ".xml";
+            String filePath = webApp + "//xml//" + fileName + ".xml";
             converter.convertFromObjectToXML(quiz, filePath);
             File fileTmpF = new File(filePath);
             System.out.println(fileTmpF.getAbsolutePath());
