@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.SecureRandom;
+import java.text.Normalizer;
+import java.util.regex.Pattern;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -61,5 +63,11 @@ public class Helper {
         fos.write(file.getBytes());
         fos.close();
         return convFile;
+    }
+
+    public static String covertStringToURL(String str) throws Exception {
+        String temp = Normalizer.normalize(str, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(temp).replaceAll("").toLowerCase().replaceAll(" ", "-").replaceAll("đ", "d");
     }
 }

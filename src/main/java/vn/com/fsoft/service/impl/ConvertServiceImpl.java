@@ -4,20 +4,16 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.Document;
@@ -30,7 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import vn.com.fsoft.common.Constants;
+import vn.com.fsoft.common.Helper;
 import vn.com.fsoft.common.XMLConverter;
 import vn.com.fsoft.dto.ConvertFormRequest;
 import vn.com.fsoft.dto.ConvertFormResponse;
@@ -59,7 +55,7 @@ public class ConvertServiceImpl implements ConvertService {
 
     @Override
     public ConvertFormResponse convert(ConvertFormRequest convertFormRequest)
-            throws IOException, JAXBException, InvalidFormatException, XMLStreamException, FactoryConfigurationError {
+            throws FactoryConfigurationError, Exception {
         MultipartFile file = convertFormRequest.getFile();
         Integer convertType = convertFormRequest.getConvertType();
         ConvertFormResponse res = new ConvertFormResponse();
@@ -214,10 +210,16 @@ public class ConvertServiceImpl implements ConvertService {
             String fileName = "converted_" + new Date().getTime();
             if (category != null) {
                 String [] arrTmp = category.split("[/]");
-                fileName = arrTmp[arrTmp.length - 1].replaceAll("[^a-zA-Z0-9- _\\u0080-\\u9fff]", "");;
+                fileName = Helper.covertStringToURL(arrTmp[arrTmp.length - 1].replaceAll("[^a-zA-Z0-9- _\\u0080-\\u9fff]", ""));
             }
-            String filePath = webApp + "//word//" + fileName + ".docx";
-            FileOutputStream out = new FileOutputStream(new File(filePath));
+            String filePath = webApp + "//word//";
+            String fullPath = filePath + fileName + ".docx";
+
+            File dir = new File(org.springframework.util.StringUtils.cleanPath(filePath));
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            FileOutputStream out = new FileOutputStream(new File(fullPath));
             document.write(out);
             out.close();
             document.close();
@@ -395,15 +397,16 @@ public class ConvertServiceImpl implements ConvertService {
             XMLConverter converter = new XMLConverter();
             quiz.getQuestionList().add(questionTmp);
 
-            String fileName = (file.getOriginalFilename()).replaceAll(".docx", "");
-            String filePath = webApp + "//xml//" + fileName + ".xml";
-            converter.convertFromObjectToXML(quiz, filePath);
-            File fileTmpF = new File(filePath);
-            System.out.println(fileTmpF.getAbsolutePath());
-            System.out.println(fileTmpF.getPath());
-            System.out.println(fileTmpF.getParentFile());
+            String fileName = Helper.covertStringToURL((file.getOriginalFilename()).replaceAll(".docx", ""));
+            String filePath = webApp + "//xml//";
+            String fullPath = filePath + fileName + ".xml";
 
-            
+            File dir = new File(org.springframework.util.StringUtils.cleanPath(filePath));
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            converter.convertFromObjectToXML(quiz, fullPath);
+
             res.setFileName(fileName);
             res.setFilePath("xml/" + fileName + ".xml");
         }
