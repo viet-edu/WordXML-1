@@ -94,9 +94,7 @@ public class ConvertServiceImpl implements ConvertService {
 
                 // Write question name
                 run = document.createParagraph().createRun();
-                if (StringUtils.indexOfAny(question.getName().getText(), "Câu", "câu", "Cau", "cau") == -1) {
-                    run.setText("Câu ");
-                }
+                run.setText("Câu ");
                 run.setText(++q + "(" + question.getQuestionId() + "): ");
 
                 // Write tag
