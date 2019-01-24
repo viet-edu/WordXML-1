@@ -23,6 +23,7 @@ public class FileManagementServiceImpl implements FileManagementService {
         List<FileConverted> result = new ArrayList<>();
         FileConverted fileConverted;
         File folder = new File(uploadPath);
+        System.out.println(uploadPath);
         String[] directories = folder.list(new FilenameFilter() {
             @Override
             public boolean accept(File current, String name) {
