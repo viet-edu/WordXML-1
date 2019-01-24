@@ -28,5 +28,5 @@ public class Constants {
 
     public static final Integer PASS_SCORE = 8;
     
-    public static final String PATH_CONST = "%s//webapps//expanded//resources//uploads";
+    public static final String PATH_CONST = "%s//webapps//wordxml//resources//uploads";
 }
