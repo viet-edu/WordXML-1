@@ -348,7 +348,7 @@ public class ConvertServiceImpl implements ConvertService {
                         questionTmp = new Question();
                         setCommonQuestion(questionTmp);
                         questionNameTmp = new QuestionName();
-                        questionNameTmp.setText(String.valueOf(i_question_name));
+                        questionNameTmp.setText(String.valueOf("Câu" + i_question_name));
                         questionTmp.setName(questionNameTmp);
                         i_question_name++;
                         lstAnswer = new ArrayList<Answer>();
