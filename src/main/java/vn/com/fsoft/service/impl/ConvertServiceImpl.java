@@ -1,20 +1,4 @@
-package vn.com.fsoft.service.impl;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
-import java.util.Matcher;
-import java.util.Pattern;
-
-import javax.xml.stream.FactoryConfigurationError;
-
-import org.apache.commons.io.IOUtils;
+.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.util.Units;
