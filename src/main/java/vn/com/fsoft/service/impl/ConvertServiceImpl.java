@@ -61,7 +61,6 @@ public class ConvertServiceImpl implements ConvertService {
     private static final String REGEX_REMOVE_ALL_HTML_TAG = "<[^>]*>";
     private static final String REGEX_GET_IFRAME_SRC = "<iframe\\s+[^>]*?src=(\"|')([^\"']+)\\1";
     private static final String REGEX_GET_IFRAME_HREF = "<iframe\\s+[^>]*?href=(\"|')([^\"']+)\\1";
-
     private static final String[] ANSWER_NUMBERING_ARRAY = {"A.", "B.", "C.", "D."};
     private static final String[] GENERAL_FEEDBACK_ARRAY = {"Lời giải"};
     private static final Integer MAX_WIDTH_XML_WORD = 350;
@@ -160,9 +159,8 @@ public class ConvertServiceImpl implements ConvertService {
                 }
 
                 // Get Link iframe
-                paragraph = document.createParagraph();
                 if (questionText.indexOf("<iframe") != - 1) {
-
+                    paragraph = document.createParagraph();
                     matcher = Pattern.compile(REGEX_GET_IFRAME_SRC).matcher(questionText);
                     while (matcher.find()) {
                         appendExternalHyperlink(matcher.group(2), "Xem video", paragraph);
@@ -490,7 +488,7 @@ public class ConvertServiceImpl implements ConvertService {
         questionTmp.setType("multichoice");
     }
 
-    private void appendExternalHyperlink(String url, String text, XWPFParagraph paragraph){
+    private void appendExternalHyperlink(String url, String text, XWPFParagraph paragraph) {
 
         if (StringUtils.isBlank(url) || paragraph == null) {
             return;
