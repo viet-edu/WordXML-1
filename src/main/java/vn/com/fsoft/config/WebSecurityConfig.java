@@ -35,15 +35,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         // Config pages not require Login
         http.authorizeRequests().antMatchers(PERMITALL_RESOURCE_LIST).permitAll();
 
-        // Config pages for ROLE_ADMIN
-        http.authorizeRequests().antMatchers(ADMIN_RESOURCE_LIST).hasAuthority("ROLE_ADMIN");
+//        // Config pages for ROLE_ADMIN
+//        http.authorizeRequests().antMatchers(ADMIN_RESOURCE_LIST).hasAuthority("ROLE_ADMIN");
+//
+//        // Config pages for ROLE_USER
+//        http.authorizeRequests().antMatchers(USER_RESOURCE_LIST).hasAnyAuthority("ROLE_ADMIN", "ROLE_USER");
 
-        // Config pages for ROLE_USER
-        http.authorizeRequests().antMatchers(USER_RESOURCE_LIST).hasAnyAuthority("ROLE_ADMIN", "ROLE_USER");
-
+        http.authorizeRequests().antMatchers("/").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER");
+        http.authorizeRequests().antMatchers("/admin/Convert").hasAuthority("ROLE_CONVERT");
+        http.authorizeRequests().antMatchers("/admin/QuanLyFile/**").hasAuthority("ROLE_FILE_MANAGEMENT");
+        http.authorizeRequests().antMatchers("/admin/QuanLyUser/**").hasAuthority("ROLE_USER_MANAGEMENT");
         // If try to access pages without roles required
         // throw AccessDeniedException
-        http.authorizeRequests().and().exceptionHandling().accessDeniedPage("/403");
+        http.authorizeRequests().and().exceptionHandling().accessDeniedPage("/auth/403");
 
         // Config login.
         http.authorizeRequests().and().formLogin()

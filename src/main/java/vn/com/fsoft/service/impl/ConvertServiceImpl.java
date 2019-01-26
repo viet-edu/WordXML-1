@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.stream.FactoryConfigurationError;
 
@@ -20,7 +22,14 @@ import org.apache.poi.xwpf.usermodel.Document;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFPicture;
+import org.apache.poi.xwpf.usermodel.XWPFRelation;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTColor;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTHyperlink;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTText;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STUnderline;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -50,6 +59,9 @@ public class ConvertServiceImpl implements ConvertService {
     private String uploadPath;
 
     private static final String REGEX_REMOVE_ALL_HTML_TAG = "<[^>]*>";
+    private static final String REGEX_GET_IFRAME_SRC = "<iframe\\s+[^>]*?src=(\"|')([^\"']+)\\1";
+    private static final String REGEX_GET_IFRAME_HREF = "<iframe\\s+[^>]*?href=(\"|')([^\"']+)\\1";
+
     private static final String[] ANSWER_NUMBERING_ARRAY = {"A.", "B.", "C.", "D."};
     private static final String[] GENERAL_FEEDBACK_ARRAY = {"Lời giải"};
     private static final Integer MAX_WIDTH_XML_WORD = 350;
@@ -79,6 +91,7 @@ public class ConvertServiceImpl implements ConvertService {
 
             XWPFParagraph paragraph;
             XWPFRun run;
+            Matcher matcher;
             String category = null;
             String answerText = null;
             String questionText = null;
@@ -146,6 +159,23 @@ public class ConvertServiceImpl implements ConvertService {
                                 .replaceAll("/p>", ""));
                 }
 
+                // Get Link iframe
+                paragraph = document.createParagraph();
+                if (questionText.indexOf("<iframe") != - 1) {
+
+                    matcher = Pattern.compile(REGEX_GET_IFRAME_SRC).matcher(questionText);
+                    while (matcher.find()) {
+                        appendExternalHyperlink(matcher.group(2), "Xem video", paragraph);
+                        paragraph.createRun().addBreak();
+                    }
+
+                    matcher = Pattern.compile(REGEX_GET_IFRAME_HREF).matcher(questionText);
+                    while (matcher.find()) {
+                        appendExternalHyperlink(matcher.group(2), "Xem video", paragraph);
+                        paragraph.createRun().addBreak();
+                    }
+                }
+
                 // Write answer
                 i = 0;
                 for (Answer answer : question.getAnswerList()) {
@@ -209,7 +239,9 @@ public class ConvertServiceImpl implements ConvertService {
                     run.setText(generalFeedbackText.replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
                 } else {
                     run.setText(generalFeedbackText.substring(i_2+2, generalFeedbackText.length())
-                            .replaceAll(REGEX_REMOVE_ALL_HTML_TAG, ""));
+                            .replaceAll(REGEX_REMOVE_ALL_HTML_TAG, "")
+                            .replaceAll("</p>", "")
+                            .replaceAll("/p>", ""));
                 }
             }
 
@@ -456,5 +488,36 @@ public class ConvertServiceImpl implements ConvertService {
         questionTmp.setHidden(0);
         questionTmp.setAnswernumbering("ABCD");
         questionTmp.setType("multichoice");
+    }
+
+    private void appendExternalHyperlink(String url, String text, XWPFParagraph paragraph){
+
+        if (StringUtils.isBlank(url) || paragraph == null) {
+            return;
+        }
+
+        if (StringUtils.isBlank(text)) {
+            text = "Link";
+        }
+
+        //Add the link as External relationship
+        String id=paragraph.getDocument().getPackagePart().addExternalRelationship(url, XWPFRelation.HYPERLINK.getRelation()).getId();
+
+        //Append the link and bind it to the relationship
+        CTHyperlink cLink=paragraph.getCTP().addNewHyperlink();
+        cLink.setId(id);
+
+        //Create the linked text
+        CTText ctText=CTText.Factory.newInstance();
+        ctText.setStringValue(text);
+        CTR ctr=CTR.Factory.newInstance();
+        ctr.setTArray(new CTText[]{ctText});
+        CTRPr rpr = ctr.addNewRPr();
+        CTColor colour = CTColor.Factory.newInstance();
+        colour.setVal("0000FF"); rpr.setColor(colour);
+        CTRPr rpr1 = ctr.addNewRPr(); rpr1.addNewU().setVal(STUnderline.SINGLE);
+
+        //Insert the linked text into the link
+        cLink.setRArray(new CTR[]{ctr});
     }
 }

@@ -12,15 +12,21 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import vn.com.fsoft.common.Constants;
+import vn.com.fsoft.common.Helper;
 import vn.com.fsoft.model.HocSinh;
+import vn.com.fsoft.model.Permission;
 import vn.com.fsoft.repository.HocSinhRepository;
 import vn.com.fsoft.service.HocSinhService;
+import vn.com.fsoft.service.RolePermissionService;
 
 @Service
 public class HocSinhServiceImpl implements HocSinhService, UserDetailsService {
 
     @Autowired
-    HocSinhRepository hocSinhRepository;
+    private HocSinhRepository hocSinhRepository;
+
+    @Autowired
+    private RolePermissionService rolePermissionService;
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         HocSinh userInfo = hocSinhRepository.findByUsername(username);
@@ -31,8 +37,14 @@ public class HocSinhServiceImpl implements HocSinhService, UserDetailsService {
 
         List<GrantedAuthority> grantList= new ArrayList<GrantedAuthority>();
         if (userInfo.getRole() != null) {
-            GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_"+userInfo.getRole().getName());
-            grantList.add(authority);
+            grantList.add(new SimpleGrantedAuthority("ROLE_"+userInfo.getRole().getName()));
+            if (userInfo.getRole().getPermissionList() != null) {
+                GrantedAuthority authority;
+                for (Permission permission : userInfo.getRole().getPermissionList()) {
+                    authority = new SimpleGrantedAuthority("ROLE_"+permission.getName());
+                    grantList.add(authority);
+                }
+            }
         }
 
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(userInfo.getUsername(),
@@ -47,14 +59,19 @@ public class HocSinhServiceImpl implements HocSinhService, UserDetailsService {
     }
 
 	@Override
-	public HocSinh saveHocSinh(HocSinh hocSinh) {
+	public HocSinh saveHocSinh(HocSinh hocSinh) throws Exception {
 
 		if (hocSinh != null) {
 			hocSinh.setRoleId(Constants.ROLE_USER);
 		}
 
+		if (findByUsername(hocSinh.getUsername()) != null) {
+		    throw new Exception("Username is existed");
+		}
+
 		return hocSinhRepository.save(hocSinh);
 	}
+
 
     @Override
     public List<HocSinh> getAllHocSinh() {
@@ -80,5 +97,17 @@ public class HocSinhServiceImpl implements HocSinhService, UserDetailsService {
     @Override
     public HocSinh findByMaHocSinh(Integer maHocSinh) {
         return hocSinhRepository.findOne(maHocSinh);
+    }
+
+    @Override
+    public HocSinh updateHocSinh(HocSinh hocSinh) throws Exception {
+        HocSinh target = hocSinhRepository.findOne(hocSinh.getMaHocSinh());
+        if (target == null) {
+            throw new Exception("User not existed");
+        }
+        Helper.copyNonNullProperties(hocSinh, target);
+        HocSinh saved = hocSinhRepository.save(target);
+        rolePermissionService.saveRolePermission(hocSinh);
+        return saved;
     }
 }

@@ -1,5 +1,8 @@
 package vn.com.fsoft.model;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -39,7 +43,10 @@ public class HocSinh {
 	@Column(name = "Role_Id", length = 5)
     private Integer roleId;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "Role_Id", referencedColumnName = "Role_Id", insertable = false, updatable = false)
+	@ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    @JoinColumn(name = "Role_Id", insertable = false, updatable = false)
     private Role role;
+
+	@Transient
+	private List<Permission> permissionList;
 }

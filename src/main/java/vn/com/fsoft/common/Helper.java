@@ -1,12 +1,19 @@
 package vn.com.fsoft.common;
 
+import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.SecureRandom;
 import java.text.Normalizer;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -69,5 +76,28 @@ public class Helper {
         String temp = Normalizer.normalize(str, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
         return pattern.matcher(temp).replaceAll("").toLowerCase().replaceAll(" ", "-").replaceAll("đ", "d");
+    }
+
+    public static void copyNonNullProperties(Object source, Object target) {
+        BeanUtils.copyProperties(source, target, getNullPropertyNames(source));
+    }
+
+    private static String[] getNullPropertyNames (Object source) {
+
+        final BeanWrapper src = new BeanWrapperImpl(source);
+        PropertyDescriptor[] propDesList = src.getPropertyDescriptors();
+
+        Set<String> emptyNames = new HashSet<String>();
+
+        for(PropertyDescriptor propDesc : propDesList) {
+            Object srcValue = src.getPropertyValue(propDesc.getName());
+
+            if (srcValue == null || (srcValue instanceof String && StringUtils.isBlank(srcValue.toString()))) {
+                emptyNames.add(propDesc.getName());
+            }
+        }
+
+        String[] result = new String[emptyNames.size()];
+        return emptyNames.toArray(result);
     }
 }

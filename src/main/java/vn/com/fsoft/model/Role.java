@@ -1,10 +1,14 @@
 package vn.com.fsoft.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,11 +38,11 @@ public class Role {
     @Column(name = "Description", length = 50)
     private String description;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "Role_Permission", joinColumns = @JoinColumn(name = "Role_Id"),
         inverseJoinColumns = @JoinColumn(name = "Permission_Id")
     )
-    private Set<Permission> permissionList = new HashSet<>();
+    private List<Permission> permissionList = new ArrayList<>();
 
     @OneToMany(mappedBy = "role")
     private Set<HocSinh> userList = new HashSet<>();

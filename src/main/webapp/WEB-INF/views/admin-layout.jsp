@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
 <html>
@@ -93,24 +94,35 @@
                             <span>Trang chủ</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <span>Quản lý file</span>
-                        </a>
-                        <ul class="ml-menu">
-                            <li>
-                                <a href="${contextPath}/admin/QuanLyFile/Converted/word">Word</a>
-                            </li>
-                            <li>
-                                <a href="${contextPath}/admin/QuanLyFile/Converted/xml">XML</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="${contextPath}/admin/Convert">
-                            <span>Convert</span>
-                        </a>
-                    </li>
+                    <sec:authorize access="hasAuthority('ROLE_USER_MANAGEMENT')">
+                        <li>
+                            <a href="${contextPath}/admin/QuanLyUser/list">
+                                <span>Quản lý user</span>
+                            </a>
+                        </li>
+                    </sec:authorize>
+                    <sec:authorize access="hasAuthority('ROLE_FILE_MANAGEMENT')">
+                       	<li>
+                            <a href="javascript:void(0);" class="menu-toggle">
+                                <span>Quản lý file</span>
+                            </a>
+                            <ul class="ml-menu">
+                                <li>
+                                    <a href="${contextPath}/admin/QuanLyFile/Converted/word">Word</a>
+                                </li>
+                                <li>
+                                    <a href="${contextPath}/admin/QuanLyFile/Converted/xml">XML</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </sec:authorize>
+                    <sec:authorize access="hasAuthority('ROLE_CONVERT')">
+                        <li>
+                            <a href="${contextPath}/admin/Convert">
+                                <span>Convert</span>
+                            </a>
+                        </li>
+                    </sec:authorize>
                 </ul>
             </div>
             <!-- #Menu -->
