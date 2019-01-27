@@ -39,10 +39,11 @@ public class FileManagementServiceImpl implements FileManagementService {
         System.out.println(Arrays.toString(directories));
         File[] listOfFiles = folder.listFiles();
 
+        String codeFile = "xml".equals(type) ? "X" : "W";
         for (int i = 0; i < listOfFiles.length; i++) {
             if (listOfFiles[i].isFile()) {
                 fileConverted = new FileConverted();
-                fileConverted.setFileId(String.valueOf("FILE" + (i + 1)));
+                fileConverted.setFileId(String.valueOf(codeFile + (i + 1)));
                 fileConverted.setFileName(listOfFiles[i].getName());
                 fileConverted.setFilePath("/"+type+"/"+listOfFiles[i].getName());
                 result.add(fileConverted);

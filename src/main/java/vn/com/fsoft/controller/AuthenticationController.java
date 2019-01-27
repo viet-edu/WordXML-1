@@ -9,10 +9,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import vn.com.fsoft.common.Constants;
@@ -61,6 +64,43 @@ public class AuthenticationController {
                 model.addAttribute("error", e.getMessage());
                 model.addAttribute(Constants.DEFAULT_MODEL_NAME, hocSinh);
                 return "auth/register";
+            }
+        }
+    }
+
+    @RequestMapping(value = "DoiThongTin", method = RequestMethod.GET)
+    public ModelAndView showUpdateInfoPage(Model model, Principal principal) {
+        if (principal != null && principal.getName() != null) {
+            model.addAttribute("action", "updateAction");
+            model.addAttribute("title", "Update User");
+            HocSinh hocSinh = hocSinhService.findByUsername(principal.getName());
+            return new ModelAndView("user/update-infor", Constants.DEFAULT_MODEL_NAME, hocSinh);
+        } else {
+            return new ModelAndView("redirect:/auth/DangNhap");
+        }
+
+    }
+
+    @RequestMapping(value = "DoiThongTinAction", method = RequestMethod.POST)
+    public String updateUserhAction(
+            @Validated @ModelAttribute(Constants.DEFAULT_MODEL_NAME) HocSinh hocSinh,
+            BindingResult result,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            model.addAttribute("action", "updateAction");
+            model.addAttribute("title", "Update user");
+            model.addAttribute(Constants.DEFAULT_MODEL_NAME, hocSinh);
+            return "user/update-infor";
+        } else {
+            try {
+                hocSinhService.updateHocSinh(hocSinh);
+                redirectAttributes.addFlashAttribute("success", "Update success!");
+                return "redirect:/auth/DoiThongTin";
+            } catch (Exception e) {
+                e.printStackTrace();
+                redirectAttributes.addFlashAttribute("error", e.getMessage());
+                return "redirect:/auth/DoiThongTin";
             }
         }
     }

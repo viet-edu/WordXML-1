@@ -75,7 +75,7 @@
                         <li><a href="${contextPath}/auth/DangNhap"><i class="material-icons">account_circle</i></a></li>
                     </c:if>
                     <c:if test="${pageContext.request.userPrincipal.name != null}">
-                        <li><a href="javascript:void(0)">Hi ${pageContext.request.userPrincipal.name},</a></li>
+                        <li><a href="${contextPath}/auth/DoiThongTin">Hi ${pageContext.request.userPrincipal.name},</a></li>
                         <li><a href="${contextPath}/auth/DangXuat"><i class="material-icons">power_settings_new</i></a></li>
                     </c:if>
                 </ul>
