@@ -18,6 +18,7 @@
                                         <th style="width: 10%">Tên file</th>
                                         <th style="width: 20%">Đường dẫn</th>
                                         <th style="width: 5%"></th>
+                                        <th style="width: 5%"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -26,6 +27,7 @@
                                             <td>${item.fileName}</td>
                                             <td><c:url value="/resources/uploads/${item.filePath}" /></td>
                                             <td><a download href="<c:url value="/resources/uploads/${item.filePath}" />" style="color: red" target="blank">Tải xuống</a></td>
+                                            <td><a href="${contextPath}/admin/QuanLyFile/delete?path=${item.filePath}" style="color: red" target="blank">Xóa file</a></td>
                                         </tr>
                                     </c:forEach>
                                 </tbody>
