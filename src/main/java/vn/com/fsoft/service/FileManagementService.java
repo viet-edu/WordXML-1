@@ -6,4 +6,5 @@ import vn.com.fsoft.model.FileConverted;
 
 public interface FileManagementService {
     List<FileConverted> getFileConverted(String type);
+    void deleteFile(String filePath);
 }

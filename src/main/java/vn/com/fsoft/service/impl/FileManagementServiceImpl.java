@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -48,5 +49,18 @@ public class FileManagementServiceImpl implements FileManagementService {
         }
 
         return result;
+    }
+
+    @Override
+    public void deleteFile(String filePath) {
+        String tomcatBase = System.getProperty("catalina.base");
+        String webApp = org.springframework.util.StringUtils.cleanPath(tomcatBase + "/" + filePath);
+        System.out.println("webApp: " + webApp);
+        File file = new File(webApp);
+        if (file.exists()) {
+            System.out.println("DELETE FILE: " + file.delete());
+        } else {
+            System.out.println("NOT EXIST FILE");
+        }
     }
 }
