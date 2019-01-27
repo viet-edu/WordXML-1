@@ -46,6 +46,8 @@
                 <span class="state">Đăng nhập</span>
             </button>
             <span>Chưa có tài khoản? <a href="${contextPath}/auth/DangKy">Đăng ký</a> | </span><a href="${contextPath}">Trang chủ</a></span>
+            <br/>
+            <span>Liên hệ: <a href="https://www.facebook.com/hoctoanthayhoanghai" target="blank">Thầy Hoàng Hải</a></span>
         </form>
     </div>
 </body>

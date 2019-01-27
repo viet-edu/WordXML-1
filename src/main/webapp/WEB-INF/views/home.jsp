@@ -126,6 +126,14 @@
                 </ul>
             </div>
             <!-- #Menu -->
+            <div class="legal">
+                <div class="copyright">
+                    ©2019 <a href="https://www.facebook.com/hoctoanthayhoanghai" target="blank">Liên hệ FB: Thầy Hoàng Hải</a>.
+                </div>
+                <div class="version">
+                    <b>Version: </b> 1.0.0
+                </div>
+            </div>
         </aside>
         <!-- #END# Left Sidebar -->
     </section>

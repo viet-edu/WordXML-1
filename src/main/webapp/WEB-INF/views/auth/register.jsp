@@ -50,6 +50,8 @@
                 <span class="state">Đăng ký</span>
             </button>
             <span>Đã có tài khoản? <a href="${contextPath}/auth/DangNhap">Đăng nhập</a> | </span><a href="${contextPath}">Trang chủ</a></span>
+            <br/>
+            <span>Liên hệ: <a href="https://www.facebook.com/hoctoanthayhoanghai" target="blank">Thầy Hoàng Hải</a></span>
         </form:form>
     </div>
 </body>
