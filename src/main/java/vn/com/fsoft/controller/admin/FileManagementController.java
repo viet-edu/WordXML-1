@@ -27,7 +27,7 @@ public class FileManagementController {
     }
 
     @GetMapping("delete")
-    public String deleteFile(@RequestParam String filePath) {
+    public String deleteFile(@RequestParam("path") String filePath) {
         fileManagementService.deleteFile(filePath);
         if (StringUtils.contains(filePath, "xml")) {
             return "redirect:/admin/QuanLyFile/xml";
