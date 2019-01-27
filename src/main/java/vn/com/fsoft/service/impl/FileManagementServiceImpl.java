@@ -42,6 +42,7 @@ public class FileManagementServiceImpl implements FileManagementService {
         for (int i = 0; i < listOfFiles.length; i++) {
             if (listOfFiles[i].isFile()) {
                 fileConverted = new FileConverted();
+                fileConverted.setFileId(String.valueOf("FILE" + (i + 1)));
                 fileConverted.setFileName(listOfFiles[i].getName());
                 fileConverted.setFilePath("/"+type+"/"+listOfFiles[i].getName());
                 result.add(fileConverted);

@@ -15,6 +15,7 @@
                             <table id="data-table" class="table table-bordered table-striped">
                                 <thead class="btn-success">
                                     <tr>
+                                        <th style="width: 10%">Mã file</th>
                                         <th style="width: 10%">Tên file</th>
                                         <th style="width: 20%">Đường dẫn</th>
                                         <th style="width: 5%"></th>
@@ -24,6 +25,7 @@
                                 <tbody>
                                     <c:forEach items="${fileConvertedList}" var="item">
                                         <tr>
+                                            <td>${item.fileId}</td>
                                             <td>${item.fileName}</td>
                                             <td><c:url value="/resources/uploads/${item.filePath}" /></td>
                                             <td><a download href="<c:url value="/resources/uploads/${item.filePath}" />" style="color: red" target="blank">Tải xuống</a></td>
