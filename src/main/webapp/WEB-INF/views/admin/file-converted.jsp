@@ -27,7 +27,7 @@
                                             <td>${item.fileName}</td>
                                             <td><c:url value="/resources/uploads/${item.filePath}" /></td>
                                             <td><a download href="<c:url value="/resources/uploads/${item.filePath}" />" style="color: red" target="blank">Tải xuống</a></td>
-                                            <td><a href="${contextPath}/admin/QuanLyFile/delete?path=${item.filePath}" style="color: red" target="blank">Xóa file</a></td>
+                                            <td><a href="${contextPath}/admin/QuanLyFile/delete?path=${item.filePath}" style="color: red">Xóa file</a></td>
                                         </tr>
                                     </c:forEach>
                                 </tbody>
