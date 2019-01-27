@@ -54,7 +54,7 @@ public class FileManagementServiceImpl implements FileManagementService {
     @Override
     public void deleteFile(String filePath) {
         String tomcatBase = System.getProperty("catalina.base");
-        String webApp = org.springframework.util.StringUtils.cleanPath(tomcatBase + "/" + filePath);
+        String webApp = org.springframework.util.StringUtils.cleanPath(tomcatBase + uploadPath + filePath);
         System.out.println("webApp: " + webApp);
         File file = new File(webApp);
         if (file.exists()) {

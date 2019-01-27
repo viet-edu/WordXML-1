@@ -30,9 +30,9 @@ public class FileManagementController {
     public String deleteFile(@RequestParam("path") String filePath) {
         fileManagementService.deleteFile(filePath);
         if (StringUtils.contains(filePath, "xml")) {
-            return "redirect:/admin/QuanLyFile/xml";
+            return "redirect:/admin/QuanLyFile/Converted/xml";
         } else {
-            return "redirect:/admin/QuanLyFile/word";
+            return "redirect:/admin/QuanLyFile/Converted/word";
         }
     }
 }
