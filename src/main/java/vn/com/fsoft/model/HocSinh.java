@@ -25,7 +25,6 @@ public class HocSinh {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "Ma_Hoc_Sinh", length = 5, columnDefinition = "serial")
 	private Integer maHocSinh;
 
 	@Column(name = "Ten_Hoc_Sinh", length = 30)
