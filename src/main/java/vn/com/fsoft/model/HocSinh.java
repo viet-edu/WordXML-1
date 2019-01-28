@@ -25,6 +25,7 @@ public class HocSinh {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "Ma_Hoc_Sinh", length = 10)
 	private Integer maHocSinh;
 
 	@Column(name = "Ten_Hoc_Sinh", length = 30)

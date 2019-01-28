@@ -17,10 +17,10 @@ import lombok.Setter;
 public class RolePermission {
 
     @Id
-    @Column(name = "Role_Id", length = 5)
+    @Column(name = "Role_Id", length = 10)
     private Integer roleId;
 
     @Id
-    @Column(name = "Permission_Id", length = 5)
+    @Column(name = "Permission_Id", length = 10)
     private Integer permissionId;
 }
