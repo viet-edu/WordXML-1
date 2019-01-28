@@ -41,6 +41,7 @@ import vn.com.fsoft.dto.ConvertFormRequest;
 import vn.com.fsoft.dto.ConvertFormResponse;
 import vn.com.fsoft.model.Answer;
 import vn.com.fsoft.model.Category;
+import vn.com.fsoft.model.FileConverted;
 import vn.com.fsoft.model.GeneralFeedback;
 import vn.com.fsoft.model.Question;
 import vn.com.fsoft.model.QuestionName;
@@ -48,12 +49,16 @@ import vn.com.fsoft.model.QuestionText;
 import vn.com.fsoft.model.Quiz;
 import vn.com.fsoft.model.Tag;
 import vn.com.fsoft.service.ConvertService;
+import vn.com.fsoft.service.FileService;
 
 @Service
 public class ConvertServiceImpl implements ConvertService {
 
     @Autowired
     private XMLConverter converter;
+
+    @Autowired
+    private FileService fileService;
 
     @Value("${storage.uploadPath}")
     private String uploadPath;
@@ -260,8 +265,16 @@ public class ConvertServiceImpl implements ConvertService {
             document.write(out);
             out.close();
             document.close();
-            res.setFileName(fileName);
-            res.setFilePath("word/" + fileName + ".docx");
+
+            // Save file
+            FileConverted fileConverted = new FileConverted();
+            fileConverted.setFileName(fileName + ".docx");
+            fileConverted.setFilePath("word/" + fileName + ".docx");
+            fileConverted.setStatus("đã duyệt");
+            fileConverted.setType("w");
+            FileConverted fileConvertedSaved = fileService.createFile(fileConverted);
+
+            res.setFileId(fileConvertedSaved.getFileId());
         }
 
         if (convertType == 2) {
@@ -448,8 +461,15 @@ public class ConvertServiceImpl implements ConvertService {
             }
             converter.convertFromObjectToXML(quiz, fullPath);
 
-            res.setFileName(fileName);
-            res.setFilePath("xml/" + fileName + ".xml");
+            // save file
+            FileConverted fileConverted = new FileConverted();
+            fileConverted.setFileName(fileName + ".xml");
+            fileConverted.setFilePath("xml/" + fileName + ".xml");
+            fileConverted.setStatus("đã duyệt");
+            fileConverted.setType("x");
+            FileConverted fileConvertedSaved = fileService.createFile(fileConverted);
+
+            res.setFileId(fileConvertedSaved.getFileId());
         }
 
         return res;

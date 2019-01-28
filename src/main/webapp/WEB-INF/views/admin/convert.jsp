@@ -15,7 +15,7 @@
                     <c:if test="${res != null}">
                         <c:if test="${res.type == 'success'}">
                             <div class="alert alert-info">
-                                <strong>${res.message}</strong> <a download href="<c:url value="/resources/uploads/${res.filePath}" />" style="color: red" target="blank">Tải xuống file tại đây</a>
+                                <strong>${res.message}</strong> <a href="${contextPath}/admin/QuanLyFile/download/${res.fileId}" style="color: red" target="blank">Tải xuống file tại đây</a>
                             </div>
                         </c:if>
                         <c:if test="${res.type == 'error'}">

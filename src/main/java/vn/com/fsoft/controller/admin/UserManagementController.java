@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import vn.com.fsoft.common.Constants;
 import vn.com.fsoft.model.HocSinh;
@@ -39,8 +40,10 @@ public class UserManagementController {
     }
 
     @RequestMapping(value = "createAction", method = RequestMethod.POST)
-    public String createUserhAction(@Validated @ModelAttribute(Constants.DEFAULT_MODEL_NAME) HocSinh hocSinh,
+    public String createUserhAction(
+            @Validated @ModelAttribute(Constants.DEFAULT_MODEL_NAME) HocSinh hocSinh,
             BindingResult result,
+            RedirectAttributes redirectAttributes,
             Model model) {
         if (result.hasErrors()) {
             model.addAttribute("title", "Đăng kí cuser");
@@ -50,6 +53,7 @@ public class UserManagementController {
         } else {
             try {
                 hocSinhService.saveHocSinh(hocSinh);
+                redirectAttributes.addFlashAttribute("success", "Create user success!");
                 return "redirect:/admin/QuanLyUser/list";
             } catch (Exception e) {
                 model.addAttribute("title", "Đăng kí cuser");

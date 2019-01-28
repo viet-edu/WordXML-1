@@ -82,7 +82,7 @@ public class HocSinhServiceImpl implements HocSinhService, UserDetailsService {
         int iSize = listTmp.size();
         List<HocSinh> listResult = new ArrayList<HocSinh>();
         for (int i = 0; i < iSize; i++) {
-            if (listTmp.get(i).getRoleId() == Constants.ROLE_USER)
+            if (listTmp.get(i).getRoleId().compareTo(Constants.ROLE_USER) == 0)
                 listResult.add(listTmp.get(i));
         }
         return listResult;

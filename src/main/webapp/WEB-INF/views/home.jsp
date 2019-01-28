@@ -108,10 +108,10 @@
                             </a>
                             <ul class="ml-menu">
                                 <li>
-                                    <a href="${contextPath}/admin/QuanLyFile/Converted/word">Word</a>
+                                    <a href="${contextPath}/admin/QuanLyFile/Converted/w">Word</a>
                                 </li>
                                 <li>
-                                    <a href="${contextPath}/admin/QuanLyFile/Converted/xml">XML</a>
+                                    <a href="${contextPath}/admin/QuanLyFile/Converted/x">XML</a>
                                 </li>
                             </ul>
                         </li>

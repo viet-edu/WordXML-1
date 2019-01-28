@@ -14,6 +14,11 @@
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="body">
+                    <c:if test="${error != null}">
+                        <div class="alert alert-danger">
+                            <strong>${error}</strong>
+                        </div>
+                    </c:if>
                     <form:form action="${contextPath}/admin/QuanLyUser/${action}" method="post" class="form-horizontal" id="validation-form">
                         <div class="row clearfix">
                             <c:set var = "str" value="updateAction"/>
@@ -38,7 +43,7 @@
                             <div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
                                 <div class="form-group">
                                     <div class="form-line">
-                                        <form:input path="username" class="form-control no-resize" disabled="true"/>
+                                        <form:input path="username" class="form-control no-resize" maxlength="50" required="required"/>
                                     </div>
                                 </div>
                             </div>
@@ -55,6 +60,7 @@
                                 </div>
                             </div>
                         </div>
+                        <c:if test="${action eq str}">
                         <div class="row clearfix">
                             <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
                                 <label for="description">Role<span class="col-red">(*):</span></label>
@@ -72,6 +78,7 @@
                                 </div>
                             </div>
                         </div>
+                        </c:if>
                         <div class="row clearfix">
                             <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-4 col-xs-offset-5">
                                 <form:button name="save" class="btn btn-success m-t-15 w-90 waves-effect">Save</form:button>

@@ -12,12 +12,23 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="body table-responsive">
+                            <c:if test="${error != null}">
+                                <div class="alert alert-danger">
+                                    <strong>${error}</strong>
+                                </div>
+                            </c:if>
+                            <c:if test="${success != null}">
+                                <div class="alert alert-success">
+                                    <strong>${success}</strong>
+                                </div>
+                            </c:if>
                             <table id="data-table" class="table table-bordered table-striped">
                                 <thead class="btn-success">
                                     <tr>
                                         <th style="width: 10%">Mã file</th>
                                         <th style="width: 10%">Tên file</th>
                                         <th style="width: 20%">Đường dẫn</th>
+                                        <th style="width: 10%">Nhãn file</th>
                                         <th style="width: 5%"></th>
                                         <th style="width: 5%"></th>
                                     </tr>
@@ -28,8 +39,9 @@
                                             <td>${item.fileId}</td>
                                             <td>${item.fileName}</td>
                                             <td><c:url value="/resources/uploads/${item.filePath}" /></td>
-                                            <td><a download href="<c:url value="/resources/uploads/${item.filePath}" />" style="color: red" target="blank">Tải xuống</a></td>
-                                            <td><a href="${contextPath}/admin/QuanLyFile/delete?path=${item.filePath}" style="color: red">Xóa file</a></td>
+                                            <td><span class="label label-info">${item.status}</span></td>
+                                            <td><a href="${contextPath}/admin/QuanLyFile/download/${item.fileId}" style="color: red" target="blank">Tải xuống</a></td>
+                                            <td><a href="${contextPath}/admin/QuanLyFile/delete/${item.fileId}?type=${item.type}" style="color: red">Xóa file</a></td>
                                         </tr>
                                     </c:forEach>
                                 </tbody>

@@ -12,6 +12,11 @@
         <div class="row clearfix">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div class="card">
+                    <c:if test="${success != null}">
+                        <div class="alert alert-success">
+                            <strong>${success}</strong>
+                        </div>
+                    </c:if>
                     <div class="header">
                         <a href="${contextPath}/admin/QuanLyUser/create" class="btn btn-success waves-effect">Đăng kí user</a>
                     </div>
