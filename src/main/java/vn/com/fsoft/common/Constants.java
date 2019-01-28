@@ -23,10 +23,10 @@ public class Constants {
     /** Default model name. */
     public static final String DEFAULT_MODEL_NAME = "command";
 
-    public static final Integer ROLE_ADMIN = 1;
-    public static final Integer ROLE_USER = 2;
+    public static final Integer ROLE_ADMIN = 99998;
+    public static final Integer ROLE_USER = 99999;
 
     public static final Integer PASS_SCORE = 8;
-    
+
     public static final String PATH_CONST = "%s//webapps//wordxml//resources//uploads";
 }
