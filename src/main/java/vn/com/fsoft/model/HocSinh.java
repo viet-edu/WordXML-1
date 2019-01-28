@@ -24,7 +24,7 @@ import lombok.Setter;
 public class HocSinh {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "Ma_Hoc_Sinh", length = 5)
 	private Integer maHocSinh;
 
