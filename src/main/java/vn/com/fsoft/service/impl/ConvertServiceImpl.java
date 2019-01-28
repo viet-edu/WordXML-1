@@ -81,7 +81,7 @@ public class ConvertServiceImpl implements ConvertService {
         ConvertFormResponse res = new ConvertFormResponse();
         String tomcatBase = System.getProperty("catalina.base");
         String webApp = tomcatBase + uploadPath;
-
+        FileConverted fileConvertedSaved = null;
 
         if (convertType == 1) {
             Quiz quiz = (Quiz) converter.convertFromXMLToObject(file, Quiz.class);
@@ -272,7 +272,7 @@ public class ConvertServiceImpl implements ConvertService {
             fileConverted.setFilePath("word/" + fileName + ".docx");
             fileConverted.setStatus("đã duyệt");
             fileConverted.setType("w");
-            FileConverted fileConvertedSaved = fileService.createFile(fileConverted);
+            fileConvertedSaved = fileService.createFile(fileConverted);
 
             res.setFileId(fileConvertedSaved.getFileId());
         }
@@ -467,10 +467,12 @@ public class ConvertServiceImpl implements ConvertService {
             fileConverted.setFilePath("xml/" + fileName + ".xml");
             fileConverted.setStatus("đã duyệt");
             fileConverted.setType("x");
-            FileConverted fileConvertedSaved = fileService.createFile(fileConverted);
+            fileConvertedSaved = fileService.createFile(fileConverted);
 
             res.setFileId(fileConvertedSaved.getFileId());
         }
+
+        fileService.createTags(fileConvertedSaved, convertFormRequest.getTags());
 
         return res;
     }

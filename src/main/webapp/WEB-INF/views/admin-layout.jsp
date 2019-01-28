@@ -23,6 +23,7 @@
     <link href="<c:url value="/resources/plugins/node-waves/waves.css" />" rel="stylesheet" />
     <link href="<c:url value="/resources/plugins/animate-css/animate.css" />" rel="stylesheet" />
     <link href="<c:url value="/resources/plugins/datatables/dataTables.bootstrap4.min.css" />" rel="stylesheet">
+    <link href="<c:url value="/resources/plugins/bootstrap-tagsinput/dist/bootstrap-tagsinput.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/css/themes/theme-green.css" />" rel="stylesheet" />
     <link href="<c:url value="/resources/css/custom.css" />" rel="stylesheet">
@@ -33,6 +34,7 @@
     <script src="<c:url value="/resources/plugins/node-waves/waves.js" />"></script>
     <script src="<c:url value="/resources/plugins/datatables/jquery.dataTables.min.js" />"></script>
     <script src="<c:url value="/resources/plugins/datatables/dataTables.bootstrap4.js" />"></script>
+    <script src="<c:url value="/resources/plugins/bootstrap-tagsinput/dist/bootstrap-tagsinput.js" />"></script>
     <script src="<c:url value="/resources/plugins/jquery-validation/jquery.validate.js" />"></script>
     <script src="<c:url value="/resources/js/admin.js"/>"></script>
     <script>

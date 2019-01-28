@@ -82,4 +82,16 @@ public class FileManagementController {
             e.printStackTrace();
         }
     }
+
+    @GetMapping(value = "search")
+    public String searchFile(
+            @RequestParam("tag") String tag,
+            @RequestParam("type") String type,
+            Model model) {
+
+        model.addAttribute("title", "File Converted");
+        model.addAttribute("fileConvertedList", fileService.getFileByTag(tag));
+
+        return "admin/file-converted";
+    }
 }

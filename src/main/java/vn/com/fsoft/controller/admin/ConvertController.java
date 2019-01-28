@@ -34,7 +34,9 @@ public class ConvertController {
     @GetMapping("/Convert")
     public ModelAndView showXMLToWordPage(Model model) {
         model.addAttribute("title", "Convert Page");
-        return new ModelAndView("admin/convert", Constants.DEFAULT_MODEL_NAME, new ConvertFormRequest());
+        ConvertFormRequest convertFormRequest = new ConvertFormRequest();
+        convertFormRequest.setTags("convert");
+        return new ModelAndView("admin/convert", Constants.DEFAULT_MODEL_NAME, convertFormRequest);
     }
 
     @PostMapping("/ConvertAction")

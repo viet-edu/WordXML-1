@@ -1,19 +1,22 @@
 package vn.com.fsoft.service.impl;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
+import vn.com.fsoft.model.FTag;
 import vn.com.fsoft.model.FileConverted;
+import vn.com.fsoft.model.FileTag;
+import vn.com.fsoft.repository.FTagRepository;
 import vn.com.fsoft.repository.FileRepository;
+import vn.com.fsoft.repository.FileTagRepository;
 import vn.com.fsoft.service.FileService;
 
 @Service
@@ -21,6 +24,12 @@ public class FileServiceImpl implements FileService {
 
     @Autowired
     private FileRepository fileRepository;
+
+    @Autowired
+    private FTagRepository fTagRepository;
+
+    @Autowired
+    private FileTagRepository fileTagRepository;
 
     @Value("${storage.uploadPath}")
     private String uploadPath;
@@ -101,5 +110,31 @@ public class FileServiceImpl implements FileService {
     @Override
     public FileConverted saveFile(FileConverted file) {
         return fileRepository.save(file);
+    }
+
+    @Override
+    public void createTags(FileConverted file, String tags) {
+        if (file == null || tags == null) {
+            return;
+        }
+        String[] tagList = tags.split("[,]");
+        FileTag fileTag;
+        for (String tag : tagList) {
+            if (fTagRepository.findOne(tag) == null) {
+                fTagRepository.save(new FTag(tag));
+            }
+            fileTag = new FileTag(tag, file.getFileId());
+            fileTagRepository.save(fileTag);
+        }
+    }
+
+    @Override
+    public List<FileConverted> getFileByTag(String tag) {
+        List<String> fileIds = fileRepository.findFileIdByTag(tag);
+        List<FileConverted> result = new ArrayList<>();
+        if (fileIds != null && !fileIds.isEmpty()) {
+            result = fileRepository.getFileByIdList(fileIds);
+        }
+        return result;
     }
 }

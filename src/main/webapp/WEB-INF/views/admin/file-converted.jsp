@@ -39,7 +39,11 @@
                                             <td>${item.fileId}</td>
                                             <td>${item.fileName}</td>
                                             <td><c:url value="/resources/uploads/${item.filePath}" /></td>
-                                            <td><span class="label label-info">${item.status}</span></td>
+                                            <td>
+                                                <c:forEach items="${item.tagFileList}" var="tag">
+                                                    <a href="${contextPath}/admin/QuanLyFile/search?tag=${tag.tagName}&type=${item.type}"><span class="label label-primary">${tag.tagName}</span></a>
+                                                </c:forEach>
+                                            </td>
                                             <td><a href="${contextPath}/admin/QuanLyFile/download/${item.fileId}" style="color: red" target="blank">Tải xuống</a></td>
                                             <td><a href="${contextPath}/admin/QuanLyFile/delete/${item.fileId}?type=${item.type}" style="color: red">Xóa file</a></td>
                                         </tr>

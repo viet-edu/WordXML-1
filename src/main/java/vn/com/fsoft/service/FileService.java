@@ -21,4 +21,8 @@ public interface FileService {
     HttpEntity<byte[]> donwloadFileById(String fileId) throws Exception;
 
     FileConverted findFileById(String fileId);
+
+    void createTags(FileConverted file, String tags);
+
+    List<FileConverted> getFileByTag(String tag);
 }

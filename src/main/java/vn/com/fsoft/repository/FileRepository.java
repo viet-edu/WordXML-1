@@ -12,5 +12,12 @@ public interface FileRepository extends JpaRepository<FileConverted, String> {
     @Query("select f.fileId from Files f where f.type like CONCAT('%',?1,'%')")
     List<String> findFileIdByType(String type);
 
+
+    @Query("select ft.fileId from FileTag ft where ft.tagName = ?1")
+    List<String> findFileIdByTag(String tag);
+
     List<FileConverted> findByType(String type);
+
+    @Query("select f from Files f where f.fileId in ?1")
+    List<FileConverted> getFileByIdList(List<String> ids);
 }

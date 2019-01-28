@@ -5,7 +5,7 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <section class="content">
     <div class="block-header align-center">
-    	<h2>${title}</h2>
+        <h2>${title}</h2>
     </div>
     <!-- Horizontal Layout -->
     <div class="row clearfix">
@@ -32,7 +32,7 @@
                             </div>
                             <div class="col-lg-5 col-md-5 col-sm-4 col-xs-4">
                                 <div class="form-group">
-                                    <form:select path="convertType" class="form-control">
+                                    <form:select path="convertType" class="form-control"  autofocus="autofocus">
                                         <form:option value="1">XML -> Word</form:option>
                                         <form:option value="2">Word -> XML</form:option>
                                     </form:select>
@@ -46,7 +46,19 @@
                             <div class="col-lg-5 col-md-5 col-sm-4 col-xs-4">
                                 <div class="form-group">
                                     <div class="form-line">
-                                        <form:input path="file" type="file" class="form-control" required="required" autofocus="autofocus"/>
+                                        <form:input path="file" type="file" class="form-control" required="required"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                                <label for="tieuDe">Tags<span class="col-red">(*):</span></label>
+                            </div>
+                            <div class="col-lg-5 col-md-5 col-sm-4 col-xs-4">
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        <form:input path="tags" class="form-control"/>
                                     </div>
                                 </div>
                             </div>
@@ -63,16 +75,21 @@
     </div>
 </section>
 <script>
-	$(function(){
-	   	$('#convertType').val(2);
-	   	$('#file').prop('accept', '.docx');
-	   	$('#convertType').on('change', function(){
-	   	   	var convertType = $(this).val();
-	   	   	if (convertType == '1') {
-	   	   	    $('#file').prop('accept', '.xml');
-	   	   	} else {
-	   	   		$('#file').prop('accept', '.docx');
-	   	   	}
-	   	});
-	});
+    $(function(){
+        $('#convertType').val(2);
+        $('#file').prop('accept', '.docx');
+        $('#convertType').on('change', function(){
+            var convertType = $(this).val();
+            if (convertType == '1') {
+                $('#file').prop('accept', '.xml');
+            } else {
+                $('#file').prop('accept', '.docx');
+            }
+        });
+        $('#tags').tagsinput({
+            confirmKeys: [13, 188],
+            cancelConfirmKeysOnEmpty: true,
+            trimValue: true
+        });
+    });
 </script>

@@ -8,4 +8,5 @@ import lombok.Data;
 public class ConvertFormRequest {
     private MultipartFile file;
     private Integer convertType;
+    private String tags;
 }
