@@ -67,7 +67,7 @@ public class FileManagementController {
         try {
             FileConverted fileConverted = fileService.findFileById(fileId);
             if (fileConverted != null) {
-                fileConverted.setStatus("đã download");
+                fileConverted.setStatus("1");
                 fileService.saveFile(fileConverted);
                 String tomcatBase = System.getProperty("catalina.base");
                 String webApp = org.springframework.util.StringUtils.cleanPath(tomcatBase + uploadPath + fileConverted.getFilePath());
@@ -120,6 +120,6 @@ public class FileManagementController {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             e.printStackTrace();
         }
-        return "redirect:/admin/QuanLyFile/edit/"+fileConverted.getFileId();
+        return "redirect:/admin/QuanLyFile/Converted/"+fileConverted.getType();
     }
 }
