@@ -19,6 +19,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Getter;
@@ -55,6 +57,7 @@ public class FileConverted {
     private Integer userId;
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "fileList", cascade=CascadeType.REMOVE)
+    @Fetch(value = FetchMode.SUBSELECT)
     private List<FTag> tagFileList = new ArrayList<>();
 
     @ManyToOne

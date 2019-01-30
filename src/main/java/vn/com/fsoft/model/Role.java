@@ -17,6 +17,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,6 +45,7 @@ public class Role {
     @JoinTable(name = "Role_Permission", joinColumns = @JoinColumn(name = "Role_Id"),
         inverseJoinColumns = @JoinColumn(name = "Permission_Id")
     )
+    @Fetch(value = FetchMode.SUBSELECT)
     private List<Permission> permissionList = new ArrayList<>();
 
     @OneToMany(mappedBy = "role")
