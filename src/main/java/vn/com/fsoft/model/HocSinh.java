@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -46,6 +47,9 @@ public class HocSinh {
 	@ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     @JoinColumn(name = "Role_Id", insertable = false, updatable = false)
     private Role role;
+
+	@OneToMany(mappedBy = "hocSinh")
+	private List<FileConverted> fileList;
 
 	@Transient
 	private List<Permission> permissionList;

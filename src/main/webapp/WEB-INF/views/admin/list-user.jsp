@@ -24,7 +24,7 @@
                         <table id="data-table" class="table table-bordered table-striped">
                             <thead class="btn-success">
                                 <tr>
-                                	<th style="">STT</th>
+                                    <th style="">STT</th>
                                     <th style="">Mã</th>
                                     <th style="">Họ tên</th>
                                     <th style="">Username</th>
@@ -33,13 +33,12 @@
                             </thead>
                             <tbody>
                                 <c:forEach items="${userList}" var="item" varStatus="status">
-                                    <tr>
+                                    <tr class="text-center">
                                         <td>${status.index + 1}</td>
                                         <td>${item.maHocSinh}</td>
                                         <td>${item.tenHocSinh}</td>
                                         <td>${item.username}</td>
                                         <td>
-                                            <a href="${contextPath}/admin/QuanLyUser/delete/${item.maHocSinh}"><span class="glyphicon glyphicon-trash"></span></a>
                                             <a href="${contextPath}/admin/QuanLyUser/update/${item.maHocSinh}"><span class="glyphicon glyphicon-edit"></span></a>
                                         </td>
                                     </tr>

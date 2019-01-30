@@ -57,23 +57,23 @@
                             </thead>
                             <tbody>
                                 <c:forEach items="${fileConvertedList}" var="item">
-                                    <tr>
+                                    <tr class="text-center">
                                         <td>${item.fileId}</td>
                                         <td>${item.fileName}</td>
-					<td>
+					                    <td>
                                             <c:if test="${item.status == '0'}">Chưa download</c:if>
                                             <c:if test="${item.status == '1'}">Đã download</c:if>
                                         </td>
                                         <td>
                                             <c:forEach items="${item.tagFileList}" var="tag">
-                                                <a href="${contextPath}/admin/QuanLyFile/search?tags=${tag.tagName}&type=${item.type}"><span class="label label-primary">${tag.tagName}</span></a>
+                                                <a href="${contextPath}/admin/QuanLyFile/search?tags=${tag.tagName}"><span class="label label-primary">${tag.tagName}</span></a>
                                             </c:forEach>
                                         </td>
-                                        <td class="text-center">
+                                        <td>
                                             <a href="${contextPath}/admin/QuanLyFile/download/${item.fileId}" class="p-r-5 delete-btn" title="Download file"><span class="glyphicon glyphicon-download-alt"></span></a>
                                             <a href="${contextPath}/admin/QuanLyFile/edit/${item.fileId}" class="p-r-5" title="Edit file"><span class="glyphicon glyphicon-edit"></span></a>
                                             <a href="${contextPath}/admin/QuanLyFile/delete/${item.fileId}?type=${item.type}" title="Delete file"><span class="glyphicon glyphicon-trash"></span></a>
-					</td>
+					                    </td>
                                     </tr>
                                 </c:forEach>
                             </tbody>

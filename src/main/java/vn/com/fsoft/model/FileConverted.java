@@ -10,7 +10,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -49,8 +51,15 @@ public class FileConverted {
     @Column(name = "Status", length = 255)
     private String status;
 
+    @Column(name = "User_Id", length = 10)
+    private Integer userId;
+
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "fileList", cascade=CascadeType.REMOVE)
     private List<FTag> tagFileList = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "User_Id", insertable = false, updatable = false)
+    private HocSinh hocSinh;
 
     @Transient
     private String strTags;
@@ -63,20 +72,5 @@ public class FileConverted {
         } else {
             return this.strTags;
         }
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof FileConverted) {
-            if (StringUtils.equals(((FileConverted) obj).getFileId(), this.getFileId())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return this.getFileId().hashCode();
     }
 }

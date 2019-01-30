@@ -17,4 +17,6 @@ public interface HocSinhService {
     HocSinh findByMaHocSinh(Integer maHocSinh);
 
     HocSinh updateHocSinh(HocSinh hocSinh) throws Exception;
+
+    HocSinh findCurrentUser();
 }

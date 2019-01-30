@@ -20,4 +20,8 @@ public interface FileRepository extends JpaRepository<FileConverted, String> {
 
     @Query("select f from Files f where f.fileId in ?1")
     List<FileConverted> getFileByIdList(List<String> ids);
+
+    List<FileConverted> findByUserId(Integer userId);
+
+    List<FileConverted> findByUserIdAndType(Integer userId, String type);
 }

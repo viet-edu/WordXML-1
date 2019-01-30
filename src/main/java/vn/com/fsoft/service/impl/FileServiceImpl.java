@@ -1,6 +1,7 @@
 package vn.com.fsoft.service.impl;
 
 import java.io.File;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -14,16 +15,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import vn.com.fsoft.common.Helper;
 import vn.com.fsoft.model.FTag;
 import vn.com.fsoft.model.FileConverted;
 import vn.com.fsoft.model.FileTag;
+import vn.com.fsoft.model.HocSinh;
 import vn.com.fsoft.repository.FTagRepository;
 import vn.com.fsoft.repository.FileRepository;
 import vn.com.fsoft.repository.FileTagRepository;
 import vn.com.fsoft.service.FileService;
+import vn.com.fsoft.service.HocSinhService;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -37,16 +43,39 @@ public class FileServiceImpl implements FileService {
     @Autowired
     private FileTagRepository fileTagRepository;
 
+    @Autowired
+    private HocSinhService hocSinhService;
+
     @Value("${storage.uploadPath}")
     private String uploadPath;
 
     @Override
     public List<FileConverted> getAllFile() {
-        return fileRepository.findAll();
+        List<FileConverted> result = new ArrayList<>();
+        HocSinh currentUser = hocSinhService.findCurrentUser();
+        if (currentUser != null) {
+            result = fileRepository.findByUserId(currentUser.getMaHocSinh());
+        }
+        return result;
     }
 
     @Override
     public FileConverted createFile(FileConverted file) {
+
+        if (file == null) {
+            return null;
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails;
+        if (authentication != null
+                && authentication.getPrincipal() != null
+                && authentication.getPrincipal() instanceof UserDetails
+                && (userDetails = (UserDetails) authentication.getPrincipal()) != null) {
+            HocSinh hocSinh = hocSinhService.findByUsername(userDetails.getUsername());
+            file.setUserId(hocSinh.getMaHocSinh());
+        }
+
         List<String> fileIdList = fileRepository.findFileIdByType(file.getType());
 
         Integer max;
@@ -66,7 +95,12 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public List<FileConverted> fileByType(String type) {
-        return fileRepository.findByType(type);
+        List<FileConverted> result = new ArrayList<>();
+        HocSinh currentUser = hocSinhService.findCurrentUser();
+        if (currentUser != null) {
+            result = fileRepository.findByUserIdAndType(currentUser.getMaHocSinh(), type);
+        }
+        return result;
     }
 
     @Override
@@ -154,7 +188,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public List<FileConverted> getFileByTag(String tags) {
         List<FileConverted> result = new ArrayList<>();
-        List<FileConverted> fileList = fileRepository.findAll();
+        List<FileConverted> fileList = this.getAllFile();
         if (fileList != null) {
             if (StringUtils.isBlank(tags)) {
                 return fileList;
@@ -171,5 +205,5 @@ public class FileServiceImpl implements FileService {
             }
         }
         return result;
-    }    
+    }
 }

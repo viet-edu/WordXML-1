@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -109,5 +111,19 @@ public class HocSinhServiceImpl implements HocSinhService, UserDetailsService {
         HocSinh saved = hocSinhRepository.save(target);
         rolePermissionService.saveRolePermission(hocSinh);
         return saved;
+    }
+
+    @Override
+    public HocSinh findCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails;
+        HocSinh hocSinh = null;
+        if (authentication != null
+                && authentication.getPrincipal() != null
+                && authentication.getPrincipal() instanceof UserDetails
+                && (userDetails = (UserDetails) authentication.getPrincipal()) != null) {
+            hocSinh = this.findByUsername(userDetails.getUsername());
+        }
+        return hocSinh;
     }
 }
