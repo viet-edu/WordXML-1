@@ -153,53 +153,23 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public List<FileConverted> getFileByTag(String tags) {
-        List<FileConverted> result;
-        if (tags != null) {
-            String[] tagList = tags.split("[,]");
-            String[] fileIdList = fileRepository.findFileIdByTags(tagList);
-            result = fileRepository.findAll(Arrays.asList(fileIdList));
-        } else {
-            result = fileRepository.findAll();
+        List<FileConverted> result = new ArrayList<>();
+        List<FileConverted> fileList = fileRepository.findAll();
+        if (fileList != null) {
+            if (StringUtils.isBlank(tags)) {
+                return fileList;
+            }
+            String[] tagSplit = tags.split("[,]");
+            List<String> tagNameList;
+            for (FileConverted file : fileList) {
+                tagNameList = file.getTagFileList().stream()
+                                                   .map(tmp -> tmp.getTagName())
+                                                   .collect(Collectors.toList());
+                if (tagNameList.containsAll(Arrays.asList(tagSplit))) {
+                    result.add(file);
+                }
+            }
         }
         return result;
-//        List<FileConverted> result = fileRepository.findAll();
-//        if (StringUtils.isNotBlank(tags)) {
-//            String[] tagSplit = tags.split("[,]");
-//            result = result.stream()
-//                           .filter(file -> {
-//                               System.out.println(file.getStrTags());
-//                               if (StringUtils.indexOfAny(file.getStrTags(), tagSplit) > -1) {
-//                                   return true;
-//                               } else {
-//                                   return false;
-//                               }
-//                           }).collect(Collectors.toList());
-//        }
-//        return result;
-
-
-//        String[] tagList = {};
-//        if (tags != null) {
-//            tagList = tags.split("[,]");
-//        }
-//
-//        List<String> fileIdList = new ArrayList<>();
-//        for (String tag : tagList) {
-//            fileIdList.addAll(fileRepository.findFileIdByTag(tag));
-//        }
-//
-//        return fileRepository.getFileByIdList(fileIdList);
-//
-//
-//        List<FTag> tagInstanceList = fTagRepository.findAll(Arrays.asList(tagList));
-//        Set<FileConverted> result = new HashSet<>();
-//
-//        if (tagInstanceList != null) {
-//            result = tagInstanceList.stream()
-//                                     .map(tag -> tag.getFileList())
-//                                     .flatMap(List::stream)
-//                                     .collect(Collectors.toSet());
-//        }
-//        return result;
-    }
+    }    
 }
