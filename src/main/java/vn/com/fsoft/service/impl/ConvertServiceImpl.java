@@ -74,7 +74,7 @@ public class ConvertServiceImpl implements ConvertService {
     private static final Integer MAX_HEIGHT_WORD_XML = 200;
 
     @Override
-    public ConvertFormResponse convert(ConvertFormRequest convertFormRequest, ConvertFormResponse res)
+    public void convert(ConvertFormRequest convertFormRequest, ConvertFormResponse res)
             throws FactoryConfigurationError, Exception {
         MultipartFile file = convertFormRequest.getFile();
         Integer convertType = convertFormRequest.getConvertType();
