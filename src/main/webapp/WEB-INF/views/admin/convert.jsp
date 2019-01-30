@@ -21,6 +21,13 @@
                         <c:if test="${res.type == 'error'}">
                             <div class="alert alert-danger">
                                 <strong>${res.message}</strong>
+                                <c:if test="${res.errorList != null}">
+                                	<ul>
+	                                	<c:forEach items="${res.errorList}" var="error">
+	                                		<li>${error}</li>
+	                                	</c:forEach>
+                                	</ul>
+                                </c:if>
                             </div>
                         </c:if>
                     </c:if>
