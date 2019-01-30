@@ -494,8 +494,6 @@ public class ConvertServiceImpl implements ConvertService {
         }
 
         fileService.createTags(fileConvertedSaved, convertFormRequest.getTags());
-
-        return res;
     }
 
     private String handleTextQuestion(final StringBuffer strTmp) {
