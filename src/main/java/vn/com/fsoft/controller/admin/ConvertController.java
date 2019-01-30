@@ -51,7 +51,7 @@ public class ConvertController {
         } else {
             ConvertFormResponse res = new ConvertFormResponse();
             try {
-                res = convertService.convert(convertFormRequest, res);
+                convertService.convert(convertFormRequest, res);
                 res.setMessage("Convert thành công!");
                 res.setType("success");
             } catch (Exception e) {
