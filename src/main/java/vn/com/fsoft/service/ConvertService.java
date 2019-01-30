@@ -4,5 +4,5 @@ import vn.com.fsoft.dto.ConvertFormRequest;
 import vn.com.fsoft.dto.ConvertFormResponse;
 
 public interface ConvertService {
-    ConvertFormResponse convert(ConvertFormRequest convertFormRequest) throws Exception;
+    void convert(ConvertFormRequest convertFormRequest, ConvertFormResponse res) throws Exception;
 }
