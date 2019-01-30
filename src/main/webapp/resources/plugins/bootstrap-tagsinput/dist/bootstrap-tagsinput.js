@@ -450,8 +450,7 @@
             wordSpace = Math.ceil(textLength / 5),
             size = textLength + wordSpace + 1;
          $input.attr('size', Math.max(this.inputSize, $input.val().length));
-         
-         if (event.which == 13) {
+         if (event.which == 13 || event.which == 9) {
              return false; // dont submit form !!
          }
       }, self));

@@ -32,7 +32,7 @@ public class FTag {
     @Column(name = "Tag_Name", length = 50)
     private String tagName;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "File_Tag",
             joinColumns = { @JoinColumn(name = "Tag_Name") },
             inverseJoinColumns = { @JoinColumn(name = "File_Id") })

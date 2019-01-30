@@ -7,19 +7,20 @@ import java.io.InputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import vn.com.fsoft.common.Constants;
 import vn.com.fsoft.model.FileConverted;
 import vn.com.fsoft.service.FileManagementService;
 import vn.com.fsoft.service.FileService;
@@ -85,13 +86,40 @@ public class FileManagementController {
 
     @GetMapping(value = "search")
     public String searchFile(
-            @RequestParam("tag") String tag,
-            @RequestParam("type") String type,
+            @RequestParam("tags") String tags,
+            @RequestParam(name="type", required=false) String type,
             Model model) {
 
         model.addAttribute("title", "File Converted");
-        model.addAttribute("fileConvertedList", fileService.getFileByTag(tag));
+        model.addAttribute("fileConvertedList", fileService.getFileByTag(tags));
 
         return "admin/file-converted";
+    }
+
+    @GetMapping(value = "edit/{fileId}")
+    public String editFile(
+            @PathVariable("fileId") String fileId,
+            Model model) {
+
+        model.addAttribute("title", "Update file");
+        model.addAttribute(Constants.DEFAULT_MODEL_NAME, fileService.findFileById(fileId));
+        return "admin/edit-file";
+    }
+
+    @PostMapping("editAction")
+    public String editAction(
+            @ModelAttribute(Constants.DEFAULT_MODEL_NAME) FileConverted fileConverted,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+
+        model.addAttribute("title", "Update file");
+        try {
+            fileService.saveFile(fileConverted);
+            redirectAttributes.addFlashAttribute("success", "Update file success!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            e.printStackTrace();
+        }
+        return "redirect:/admin/QuanLyFile/edit/"+fileConverted.getFileId();
     }
 }

@@ -14,7 +14,7 @@ public interface FileService {
 
     FileConverted createFile(FileConverted file);
 
-    FileConverted saveFile(FileConverted file);
+    FileConverted saveFile(FileConverted file) throws Exception;
 
     void deleteFileById(String fileId) throws Exception;
 

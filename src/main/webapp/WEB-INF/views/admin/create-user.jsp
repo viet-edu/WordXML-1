@@ -2,8 +2,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<%@page import="vn.com.fsoft.model.HocSinh"%>
-<%@page import="java.util.List"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <section class="content">
     <div class="block-header align-center">

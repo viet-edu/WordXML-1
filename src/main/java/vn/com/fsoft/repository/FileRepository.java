@@ -13,8 +13,8 @@ public interface FileRepository extends JpaRepository<FileConverted, String> {
     List<String> findFileIdByType(String type);
 
 
-    @Query("select ft.fileId from FileTag ft where ft.tagName = ?1")
-    List<String> findFileIdByTag(String tag);
+    @Query("select ft.fileId from FileTag ft where ft.tagName in ?1")
+    String[] findFileIdByTags(String[] tags);
 
     List<FileConverted> findByType(String type);
 

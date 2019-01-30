@@ -2,15 +2,21 @@ package vn.com.fsoft.service.impl;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
+import vn.com.fsoft.common.Helper;
 import vn.com.fsoft.model.FTag;
 import vn.com.fsoft.model.FileConverted;
 import vn.com.fsoft.model.FileTag;
@@ -108,8 +114,25 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public FileConverted saveFile(FileConverted file) {
-        return fileRepository.save(file);
+    public FileConverted saveFile(FileConverted file) throws Exception {
+
+        if (file == null) {
+            throw new Exception("Not found file");
+        }
+
+        FileConverted target = fileRepository.findOne(file.getFileId());
+
+        if (target == null) {
+            throw new Exception("Not found file with id: " +file.getFileId());
+        }
+
+        if (file.getStrTags() != null) {
+            fileTagRepository.deleteFileTagByFileId(file.getFileId());
+            this.createTags(file, file.getStrTags());
+        }
+
+        Helper.copyNonNullProperties(file, target);
+        return fileRepository.save(target);
     }
 
     @Override
@@ -129,12 +152,54 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public List<FileConverted> getFileByTag(String tag) {
-        List<String> fileIds = fileRepository.findFileIdByTag(tag);
-        List<FileConverted> result = new ArrayList<>();
-        if (fileIds != null && !fileIds.isEmpty()) {
-            result = fileRepository.getFileByIdList(fileIds);
+    public List<FileConverted> getFileByTag(String tags) {
+        List<FileConverted> result;
+        if (tags != null) {
+            String[] tagList = tags.split("[,]");
+            String[] fileIdList = fileRepository.findFileIdByTags(tagList);
+            result = fileRepository.findAll(Arrays.asList(fileIdList));
+        } else {
+            result = fileRepository.findAll();
         }
         return result;
+//        List<FileConverted> result = fileRepository.findAll();
+//        if (StringUtils.isNotBlank(tags)) {
+//            String[] tagSplit = tags.split("[,]");
+//            result = result.stream()
+//                           .filter(file -> {
+//                               System.out.println(file.getStrTags());
+//                               if (StringUtils.indexOfAny(file.getStrTags(), tagSplit) > -1) {
+//                                   return true;
+//                               } else {
+//                                   return false;
+//                               }
+//                           }).collect(Collectors.toList());
+//        }
+//        return result;
+
+
+//        String[] tagList = {};
+//        if (tags != null) {
+//            tagList = tags.split("[,]");
+//        }
+//
+//        List<String> fileIdList = new ArrayList<>();
+//        for (String tag : tagList) {
+//            fileIdList.addAll(fileRepository.findFileIdByTag(tag));
+//        }
+//
+//        return fileRepository.getFileByIdList(fileIdList);
+//
+//
+//        List<FTag> tagInstanceList = fTagRepository.findAll(Arrays.asList(tagList));
+//        Set<FileConverted> result = new HashSet<>();
+//
+//        if (tagInstanceList != null) {
+//            result = tagInstanceList.stream()
+//                                     .map(tag -> tag.getFileList())
+//                                     .flatMap(List::stream)
+//                                     .collect(Collectors.toSet());
+//        }
+//        return result;
     }
 }
