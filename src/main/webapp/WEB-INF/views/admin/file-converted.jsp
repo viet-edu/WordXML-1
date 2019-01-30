@@ -50,7 +50,7 @@
                                 <tr>
                                     <th style="width: 5%">Mã file</th>
 			            <th style="width: 20%">Tên file</th>
-                                    <th style="width: 10%">Trang thai</th>
+                                    <th style="width: 10%">Trạng thái</th>
                                     <th style="width: 20%">Nhãn file</th>
 				    <th style="width: 10%"></th>
                                 </tr>
