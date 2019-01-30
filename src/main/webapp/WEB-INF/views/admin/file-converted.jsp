@@ -48,11 +48,11 @@
                         <table id="data-table" class="table table-bordered table-striped">
                             <thead class="btn-success">
                                 <tr>
-                                    <th style="width: 10%">Mã file</th>
-                                    <th style="width: 10%">Tên file</th>
-                                    <th style="width: 30%">Đường dẫn</th>
+                                    <th style="width: 5%">Mã file</th>
+			            <th style="width: 20%">Tên file</th>
                                     <th style="width: 20%">Nhãn file</th>
-                                    <th style="width: 10%"></th>
+                                    <th style="width: 10%">Trang thai</th>
+				    <th style="width: 10%"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -60,17 +60,22 @@
                                     <tr>
                                         <td>${item.fileId}</td>
                                         <td>${item.fileName}</td>
-                                        <td><c:url value="/resources/uploads/${item.filePath}" /></td>
+					<td>
+                                            <c:if test="${item.status == '0'}">Chưa download</c:if>
+                                            <c:if test="${item.status == '1'}">Đã download</c:if>
+                                        </td>
                                         <td>
                                             <c:forEach items="${item.tagFileList}" var="tag">
                                                 <a href="${contextPath}/admin/QuanLyFile/search?tags=${tag.tagName}&type=${item.type}"><span class="label label-primary">${tag.tagName}</span></a>
                                             </c:forEach>
                                         </td>
-                                        <td>
-                                            <a href="${contextPath}/admin/QuanLyFile/download/${item.fileId}" class="p-r-5 delete-btn"><span class="glyphicon glyphicon-download-alt"></span></a>
-                                            <a href="${contextPath}/admin/QuanLyFile/edit/${item.fileId}" class="p-r-5"><span class="glyphicon glyphicon-edit"></span></a>
-                                            <a href="${contextPath}/admin/QuanLyFile/delete/${item.fileId}?type=${item.type}"><span class="glyphicon glyphicon-trash"></span></a>
-                                        </td>
+                                        <td class="text-center">
+                                        	<c:if test="${item.status == '0'}">
+                                            	<a href="${contextPath}/admin/QuanLyFile/download/${item.fileId}" class="p-r-5 delete-btn" title="Download file"><span class="glyphicon glyphicon-download-alt"></span></a>
+                                            </c:if>
+                                            <a href="${contextPath}/admin/QuanLyFile/edit/${item.fileId}" class="p-r-5" title="Edit file"><span class="glyphicon glyphicon-edit"></span></a>
+                                            <a href="${contextPath}/admin/QuanLyFile/delete/${item.fileId}?type=${item.type}" title="Delete file"><span class="glyphicon glyphicon-trash"></span></a>
+					</td>
                                     </tr>
                                 </c:forEach>
                             </tbody>
