@@ -74,11 +74,10 @@ public class ConvertServiceImpl implements ConvertService {
     private static final Integer MAX_HEIGHT_WORD_XML = 200;
 
     @Override
-    public ConvertFormResponse convert(ConvertFormRequest convertFormRequest)
+    public ConvertFormResponse convert(ConvertFormRequest convertFormRequest, ConvertFormResponse res)
             throws FactoryConfigurationError, Exception {
         MultipartFile file = convertFormRequest.getFile();
         Integer convertType = convertFormRequest.getConvertType();
-        ConvertFormResponse res = new ConvertFormResponse();
         String tomcatBase = System.getProperty("catalina.base");
         String webApp = tomcatBase + uploadPath;
         FileConverted fileConvertedSaved = null;
@@ -451,6 +450,28 @@ public class ConvertServiceImpl implements ConvertService {
             XMLConverter converter = new XMLConverter();
             quiz.getQuestionList().add(questionTmp);
 
+            // Validate quiz
+            boolean isFraction100 = false;
+            List<String> errorList = new ArrayList<>();
+            for (Question question : quiz.getQuestionList()) {
+                if (question.getAnswerList() != null && !question.getAnswerList().isEmpty()) {
+                    for (Answer answer : question.getAnswerList()) {
+                        if (answer.getFraction() == 100) {
+                            isFraction100 = true;
+                        }
+                    }
+                    if (!isFraction100) {
+                        errorList.add(question.getName().getText() + " chưa bôi đậm đáp án đúng");
+                    }
+                    isFraction100 = false;
+                }
+            }
+
+            if (!errorList.isEmpty()) {
+                res.setErrorList(errorList);
+                throw new Exception("Lỗi file");
+            }
+            
             String fileName = Helper.covertStringToURL((file.getOriginalFilename()).replaceAll(".docx", ""));
             String filePath = webApp + "//xml//";
             String fullPath = filePath + fileName + ".xml";
