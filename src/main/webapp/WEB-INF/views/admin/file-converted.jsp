@@ -50,8 +50,8 @@
                                 <tr>
                                     <th style="width: 5%">Mã file</th>
 			            <th style="width: 20%">Tên file</th>
-                                    <th style="width: 20%">Nhãn file</th>
                                     <th style="width: 10%">Trang thai</th>
+                                    <th style="width: 20%">Nhãn file</th>
 				    <th style="width: 10%"></th>
                                 </tr>
                             </thead>
@@ -70,9 +70,7 @@
                                             </c:forEach>
                                         </td>
                                         <td class="text-center">
-                                        	<c:if test="${item.status == '0'}">
-                                            	<a href="${contextPath}/admin/QuanLyFile/download/${item.fileId}" class="p-r-5 delete-btn" title="Download file"><span class="glyphicon glyphicon-download-alt"></span></a>
-                                            </c:if>
+                                            <a href="${contextPath}/admin/QuanLyFile/download/${item.fileId}" class="p-r-5 delete-btn" title="Download file"><span class="glyphicon glyphicon-download-alt"></span></a>
                                             <a href="${contextPath}/admin/QuanLyFile/edit/${item.fileId}" class="p-r-5" title="Edit file"><span class="glyphicon glyphicon-edit"></span></a>
                                             <a href="${contextPath}/admin/QuanLyFile/delete/${item.fileId}?type=${item.type}" title="Delete file"><span class="glyphicon glyphicon-trash"></span></a>
 					</td>
