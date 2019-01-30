@@ -30,6 +30,7 @@
                                     <div class="input-group m-b-0-i">
                                         <div class="form-line input-border">
                                             <form:hidden path="fileId"/>
+                                            <form:hidden path="type"/>
                                             <form:input path="strTags" class="form-control" required="required" autofocus="autofocus" />
                                         </div>
                                     </div>
