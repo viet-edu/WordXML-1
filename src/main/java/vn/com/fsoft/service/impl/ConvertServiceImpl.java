@@ -270,7 +270,7 @@ public class ConvertServiceImpl implements ConvertService {
             FileConverted fileConverted = new FileConverted();
             fileConverted.setFileName(fileName + ".docx");
             fileConverted.setFilePath("word/" + fileName + ".docx");
-            fileConverted.setStatus("đã duyệt");
+            fileConverted.setStatus("0");
             fileConverted.setType("w");
             fileConvertedSaved = fileService.createFile(fileConverted);
 
@@ -465,7 +465,7 @@ public class ConvertServiceImpl implements ConvertService {
             FileConverted fileConverted = new FileConverted();
             fileConverted.setFileName(fileName + ".xml");
             fileConverted.setFilePath("xml/" + fileName + ".xml");
-            fileConverted.setStatus("đã duyệt");
+            fileConverted.setStatus("0");
             fileConverted.setType("x");
             fileConvertedSaved = fileService.createFile(fileConverted);
 
