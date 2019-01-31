@@ -71,6 +71,7 @@ public class FileManagementController {
                 fileService.saveFile(fileConverted);
                 String tomcatBase = System.getProperty("catalina.base");
                 String webApp = org.springframework.util.StringUtils.cleanPath(tomcatBase + uploadPath + fileConverted.getFilePath());
+                System.out.println(webApp);
                 File fileToDownload = new File(webApp);
                 InputStream inputStream = new FileInputStream(fileToDownload);
                 response.setContentType("application/force-download");
