@@ -113,12 +113,13 @@ public class FileServiceImpl implements FileService {
         String tomcatBase = System.getProperty("catalina.base");
         String webApp = org.springframework.util.StringUtils.cleanPath(tomcatBase + uploadPath + fileConverted.getFilePath());
         File file = new File(webApp);
+        
+        fileRepository.delete(fileId);
 
         if (file.exists()) {
             file.delete();
-            fileRepository.delete(fileId);
         } else {
-            throw new Exception("File not found with path: " + fileConverted.getFilePath());
+            //throw new Exception("File not found with path: " + fileConverted.getFilePath());
         }
     }
 
